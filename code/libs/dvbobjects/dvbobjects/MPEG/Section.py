@@ -45,6 +45,8 @@ class Section(DVBobject):
 
     def __sanity_check(self):
 
+        print ("Section Length =====> " + str(self.section_length))
+
         assert self.section_syntax_indicator == 1
         assert self.current_next_indicator in (0, 1)
         assert 0 <= self.table_id <= 0xff
