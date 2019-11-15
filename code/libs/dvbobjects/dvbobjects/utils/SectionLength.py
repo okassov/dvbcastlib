@@ -10,7 +10,8 @@ from dvbobjects.PSI.BAT import *
 from dvbobjects.DVB.Descriptors import *
 from dvbobjects.MPEG.Descriptors import *
 
-ts_for_sections = []
+bat_ts_for_sections = []
+nit_ts_for_sections = []
 
 services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1], [800, 1], [900, 1],
             [110, 1], [210, 1], [310, 1], [410, 1], [510, 1], [610, 1], [710, 1], [810, 1], [910, 1],
@@ -24,33 +25,48 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
             [190, 1], [290, 1], [390, 1], [490, 1]]
 
 
-def bat_sec_len(first_loop, second_loop):
+def split_list(alist, parts=2):
+    '''This function divide list into 2 parts'''
+
+    length = len(alist)
+
+    return [ alist[i*length // parts: (i+1)*length // parts] 
+             for i in range(parts) ]
+
+
+def sec_len(first_loop, second_loop):
     '''This function calculate bat section length.
     Get first_loop descriptors and second_loop 
     descriptors as args. Return section length'''
 
-    # pack bouquet_descriptor_loop
-    bdl_bytes = b"".join(
+    # pack first_loop_descriptors
+    fl_bytes = b"".join(
         map(lambda x: x.pack(),
         first_loop))
 
-    # pack transport_stream_loop
-    tsl_bytes = b"".join(
+    # pack second_loop_descriptors
+    sl_bytes = b"".join(
         map(lambda x: x.pack(),
         second_loop))
 
-    print ("Calculated length ===> " + str(len(bdl_bytes) + len(tsl_bytes)))
+    print ("Calculated length ===> " + str(len(fl_bytes) + len(sl_bytes)))
 
-    return len(bdl_bytes) + len(tsl_bytes)
+    return len(fl_bytes) + len(sl_bytes)
 
 
 def bat_loops(transports_list, services_list):
     '''Function get 2 list args with transports and services,
-    and return length of loops'''
+    and return length of loops.
+    Args:
+    transports_list = [ts_id1, ts_id2, ...]
+    services_list = [[[ts_id1_sid1, ts_id1_sid1_type], [ts_id1_sid1, ts_id1_sid1_type], ...]]
+    Return:
+    (sec_len, bdl, tdl)'''
 
     bdl = bouquet_descriptor_loop = [
             bouquet_name_descriptor(bouquet_name = b"Subscriber BAT [0x5F41]")
         ]
+
     tdl = transport_stream_loop = [
             transport_stream_loop_item(
                 transport_stream_id = i,
@@ -68,19 +84,58 @@ def bat_loops(transports_list, services_list):
             ) for i in transports_list
         ]
 
-    return bat_sec_len(bdl, tdl), bdl, tdl
+    return sec_len(bdl, tdl), bdl, tdl
 
 
-def split_list(alist, wanted_parts=2):
-    '''This function divide list into 2 parts'''
+def nit_loops(transports_list, services_list):
+    '''Function get 2 list args with transports and services,
+    and return length of loops'''
 
-    length = len(alist)
+    ndl = network_descriptor_loop = [
+        network_descriptor(network_name = b"Marat Network",),
+        multilingual_network_descriptor(
+            multilingual_network_descriptor_loop = [
+                multilingual_network_descriptor_loop_item(
+                    ISO_639_language_code = b"rus",
+                    network_name = b"Kazteleradio"
+                )
+            ]
+        ),
+        private_data_specifier_descriptor(private_data_specifier = 24577),
+        ]
 
-    return [ alist[i*length // wanted_parts: (i+1)*length // wanted_parts] 
-             for i in range(wanted_parts) ]
+    tdl = transport_stream_loop = [
+        transport_stream_loop_item(
+            transport_stream_id = i,
+            original_network_id = 41007,
+            transport_descriptor_loop = [
+                service_list_descriptor(
+                    dvb_service_descriptor_loop = [
+                        service_descriptor_loop_item(
+                             service_ID = i[0], 
+                             service_type = i[1],
+                        ) for i in services
+                    ]
+                ),
+                transport_stream_sat_descriptor(
+                    frequency = 1211141313,
+                    orbital_position = 5850,
+                    west_east_flag = 1,
+                    polarization = 3,
+                    roll_off = 0,
+                    modulation_system = 1,
+                    modulation_type = 1,
+                    symbol_rate = 30,
+                    FEC_inner = 3
+                )
+            ]        
+        ) for i in transports_list
+    ]
+
+    return sec_len(ndl, tdl), ndl, tdl
 
 
-def check_length(transports_length, transports):
+def check_length(transports_length, transports, ts_section):
     '''This function check length of second loop for all
     transports in this loop. If length of loop > 1024 - 3,
     then it's divides trasnport list to multiple list like 1/2
@@ -89,17 +144,19 @@ def check_length(transports_length, transports):
 
     section_max_size = 1024
 
+    if ts_section == "BAT":
+        ts_section_list = bat_ts_for_sections
+    elif ts_section == "NIT":
+        ts_section_list = nit_ts_for_sections
+    else:
+        pass
 
     if 0 <= (transports_length + 13) <= (section_max_size - 3):
-        ts_for_sections.append(transports)
-        #print (ts_for_sections)
+        ts_section_list.append(transports)
     else:
         section = split_list(transports)
-        #print (section)
         for i in section:
-            check_length(bat_loops(i, services)[0], i)
-
-
-    return (ts_for_sections)
-
+            check_length(bat_loops(i, services)[0], i, ts_section)
+    print (ts_section_list)
+    return ts_section_list
 

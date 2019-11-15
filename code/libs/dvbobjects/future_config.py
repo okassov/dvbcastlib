@@ -32,92 +32,71 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
             [180, 1], [280, 1], [380, 1], [480, 1], [580, 1], [680, 1], [780, 1], [880, 1], [980, 1],
             [190, 1], [290, 1], [390, 1], [490, 1]]
 
-transports = [1,2,3,4,5,6,7,8,9,10,11]
+transports = [1,2,3,4]
 
 
 #############################
 # Network Information Table #
 #############################
 
+nit_sec_res = []
 
-nit = network_information_section(
-    network_id = 41007,
-    network_descriptor_loop = [
-        network_descriptor(network_name = b"Marat Network",),
-        multilingual_network_descriptor(
-            multilingual_network_descriptor_loop = [
-                multilingual_network_descriptor_loop_item(
-                    ISO_639_language_code = b"rus",
-                    network_name = b"Kazteleradio"
-                )
-            ]
-        ),
-        private_data_specifier_descriptor(private_data_specifier = 24577),
-    ],
-    transport_stream_loop = [
-        transport_stream_loop_item(
-            transport_stream_id = test_transport_stream_id,
-            original_network_id = test_original_transport_stream_id,
-            transport_descriptor_loop = [
-                service_list_descriptor(
-                    dvb_service_descriptor_loop = [
-                        service_descriptor_loop_item(
-                             service_ID = i[0], 
-                             service_type = i[1],
-                        ) for i in services
-                    ],
-                ),
-                transport_stream_sat_descriptor(
-                    frequency = 1211141313,
-                    orbital_position = 5850,
-                    west_east_flag = 1,
-                    polarization = 3,
-                    roll_off = 0,
-                    modulation_system = 1,
-                    modulation_type = 1,
-                    symbol_rate = 30,
-                    FEC_inner = 3)
-            ],        
-        ),
-    ],
-    version_number = 1, # you need to change the table number every time you edit, so the decoder will compare its version with the new one and update the table
-    section_number = 0,
-    last_section_number = 0,
-)
+# Get list of ts_lists
+sections_ts = check_length(nit_loops(transports, services)[0], transports, "NIT")
+
+# Generate sections
+for idx, val in enumerate(sections_ts):
+
+    nit = network_information_section(
+        network_id = 41007,
+        network_descriptor_loop = nit_loops(val, services)[1],
+        transport_stream_loop = nit_loops(val, services)[2],
+        version_number = 1,
+        section_number = idx,
+        last_section_number = len(sections_ts) - 1
+    )
+    nit_sec_res.append(nit)
+
+# Write sections to nit.sec file
+with open("./nit.sec", "wb") as DFILE:
+    for sec in nit_sec_res: 
+        print (sec)
+        DFILE.write(sec.pack())
+
 
 ############################################################################
 
-sections_ts = check_length(bat_loops(transports, services)[0], transports)
-print (sections_ts)
+#############################
+# Bouquet Association Table #
+#############################
+
 
 bat_sec_res = []
 
-for idx, val in enumerate(sections_ts):
+# Get list of ts_lists
+sections_ts = check_length(bat_loops(transports, services)[0], transports, "BAT")
 
-    print (idx)
+# Generate sections
+for idx, val in enumerate(sections_ts):
 
     bat = bouquet_association_section(
         bouquet_id = 24385,
         bouquet_descriptor_loop = bat_loops(val, services)[1],
         transport_stream_loop = bat_loops(val, services)[2],
-        version_number = 1, # you need to change the table number every time you edit, so the decoder will compare its version with the new one and update the table
+        version_number = 1,
         section_number = idx,
         last_section_number = len(sections_ts) - 1,
     )
-    bat_sec_res.append(bat)
-    
-print (bat_sec_res)
 
+    bat_sec_res.append(bat)
+
+# Write sections to bat.sec file
 with open("./bat.sec", "wb") as DFILE:
     for sec in bat_sec_res: 
         print (sec)
         DFILE.write(sec.pack())
-# out = open("./bat.sec", "wb")
-# out.write(bat.pack())
-# out.close
-# out = open("./bat.sec", "wb") # python  flush bug
-# out.close
-# os.system('/usr/local/bin/sec2ts 17 < ./bat.sec > ./firstbat.ts')
+
+#############################################################################################
 
 
 
