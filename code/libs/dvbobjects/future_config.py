@@ -6,7 +6,7 @@ from dvbobjects.PSI.NIT import *
 from dvbobjects.PSI.SDT import *
 from dvbobjects.PSI.PMT import *
 from dvbobjects.PSI.BAT import *
-from dvbobjects.utils.LengthCalculate import *
+from dvbobjects.utils.SectionLength import *
 from dvbobjects.DVB.Descriptors import *
 from dvbobjects.MPEG.Descriptors import *
 
@@ -87,37 +87,37 @@ nit = network_information_section(
 
 ############################################################################
 
-check_length(bat_loops_length(transports, services), transports)
+sections_ts = check_length(bat_loops(transports, services)[0], transports)
+print (sections_ts)
 
+bat_sec_res = []
 
-# if check_length(bat_loops_length(transports, services)):
-#     print ("Section OK")
-# else:
-#     if len(transports) == 1:
-#         print ("Need decrease transport_descriptor_loop length")
-#     else:
-#         print (split_list(transports))
-#         for i in split_list(transports):
-#             if check_length(bat_loops_length(i, services)):
-#                 print("LENGTH OK")
-#             else:
-#                 print ("LENGTH FALSE")
-############################################################################
+for idx, val in enumerate(sections_ts):
 
+    print (idx)
 
+    bat = bouquet_association_section(
+        bouquet_id = 24385,
+        bouquet_descriptor_loop = bat_loops(val, services)[1],
+        transport_stream_loop = bat_loops(val, services)[2],
+        version_number = 1, # you need to change the table number every time you edit, so the decoder will compare its version with the new one and update the table
+        section_number = idx,
+        last_section_number = len(sections_ts) - 1,
+    )
+    bat_sec_res.append(bat)
+    
+print (bat_sec_res)
 
-# bat = bouquet_association_section(
-#     bouquet_id = 24385,
-#     bouquet_descriptor_loop = bdl,
-#     transport_stream_loop = tdl,
-#     version_number = 1, # you need to change the table number every time you edit, so the decoder will compare its version with the new one and update the table
-#     section_number = 0,
-#     last_section_number = 0,
-# )
-
-
-
-
+with open("./bat.sec", "wb") as DFILE:
+    for sec in bat_sec_res: 
+        print (sec)
+        DFILE.write(sec.pack())
+# out = open("./bat.sec", "wb")
+# out.write(bat.pack())
+# out.close
+# out = open("./bat.sec", "wb") # python  flush bug
+# out.close
+# os.system('/usr/local/bin/sec2ts 17 < ./bat.sec > ./firstbat.ts')
 
 
 
@@ -132,10 +132,5 @@ check_length(bat_loops_length(transports, services), transports)
 # out.close
 # os.system('/usr/local/bin/sec2ts 16 < ./nit.sec > ./firstnit.ts')
 
-# out = open("./bat.sec", "wb")
-# out.write(bat.pack())
-# out.close
-# out = open("./bat.sec", "wb") # python  flush bug
-# out.close
-# os.system('/usr/local/bin/sec2ts 17 < ./bat.sec > ./firstbat.ts')
+
 

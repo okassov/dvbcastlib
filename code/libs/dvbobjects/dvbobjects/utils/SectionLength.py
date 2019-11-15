@@ -7,10 +7,10 @@ from dvbobjects.PSI.NIT import *
 from dvbobjects.PSI.SDT import *
 from dvbobjects.PSI.PMT import *
 from dvbobjects.PSI.BAT import *
-from dvbobjects.utils.LengthCalculate import *
 from dvbobjects.DVB.Descriptors import *
 from dvbobjects.MPEG.Descriptors import *
 
+ts_for_sections = []
 
 services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1], [800, 1], [900, 1],
             [110, 1], [210, 1], [310, 1], [410, 1], [510, 1], [610, 1], [710, 1], [810, 1], [910, 1],
@@ -24,24 +24,28 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
             [190, 1], [290, 1], [390, 1], [490, 1]]
 
 
-def bat_section_length(bouquet_descriptor_loop, transport_stream_loop):
+def bat_sec_len(first_loop, second_loop):
+    '''This function calculate bat section length.
+    Get first_loop descriptors and second_loop 
+    descriptors as args. Return section length'''
 
     # pack bouquet_descriptor_loop
     bdl_bytes = b"".join(
         map(lambda x: x.pack(),
-        bouquet_descriptor_loop))
+        first_loop))
 
     # pack transport_stream_loop
     tsl_bytes = b"".join(
         map(lambda x: x.pack(),
-        transport_stream_loop))
+        second_loop))
 
     print ("Calculated length ===> " + str(len(bdl_bytes) + len(tsl_bytes)))
 
     return len(bdl_bytes) + len(tsl_bytes)
 
-def bat_loops_length(transports_list, services_list):
-    '''Function get 2 list with transports and services,
+
+def bat_loops(transports_list, services_list):
+    '''Function get 2 list args with transports and services,
     and return length of loops'''
 
     bdl = bouquet_descriptor_loop = [
@@ -64,27 +68,38 @@ def bat_loops_length(transports_list, services_list):
             ) for i in transports_list
         ]
 
-    return bat_section_length(bdl, tdl)
+    return bat_sec_len(bdl, tdl), bdl, tdl
+
 
 def split_list(alist, wanted_parts=2):
+    '''This function divide list into 2 parts'''
+
     length = len(alist)
+
     return [ alist[i*length // wanted_parts: (i+1)*length // wanted_parts] 
              for i in range(wanted_parts) ]
 
 
 def check_length(transports_length, transports):
+    '''This function check length of second loop for all
+    transports in this loop. If length of loop > 1024 - 3,
+    then it's divides trasnport list to multiple list like 1/2
+    and agian check this transport lists. Until the length 
+    is not consistent with the standard.'''
 
     section_max_size = 1024
 
-    if 0 <= (transports_length + 13) <= (section_max_size - 3):
-        print (True)
-        return True
-    else:
-        print (False)
-        section = split_list(transports)
-        print (section)
 
+    if 0 <= (transports_length + 13) <= (section_max_size - 3):
+        ts_for_sections.append(transports)
+        #print (ts_for_sections)
+    else:
+        section = split_list(transports)
+        #print (section)
         for i in section:
-            check_length(bat_loops_length(i, services), i)
+            check_length(bat_loops(i, services)[0], i)
+
+
+    return (ts_for_sections)
 
 
