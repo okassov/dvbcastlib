@@ -86,19 +86,11 @@ class Section(DVBobject):
             self.section_number,
             self.last_section_number) + body
 
-        return data + self.crc_32_new(data)
+        return data + self.crc_32(data)
 
     def crc_32(self, data):
-
-        crc = crc32.CRC_32(data)
-        
-        return pack("!L", crc)
-
-    def crc_32_new(self, data):
         b = bytearray(data)
         crc32_func = crcmod.predefined.mkCrcFun('crc-32-mpeg')
-        print (crc32_func(memoryview(b)))
-        print (hex(crc32_func(memoryview(b))))
         crc = crc32_func(memoryview(b))
 
         return pack("!L", crc)

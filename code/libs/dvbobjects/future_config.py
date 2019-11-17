@@ -13,6 +13,10 @@ from dvbobjects.utils.SectionLength import *
 from dvbobjects.utils.DateTime import *
 from dvbobjects.DVB.Descriptors import *
 from dvbobjects.MPEG.Descriptors import *
+from dateutil.rrule import *
+from dateutil.parser import *
+from datetime import *
+import time
 
 
 
@@ -74,217 +78,263 @@ events2 = [
         ]
 
 
-# #############################
-# # Network Information Table #
-# #############################
+#############################
+# Network Information Table #
+#############################
 
-# nit_sec_res = []
+nit_sections = []
 
-# # Get list of ts_lists
-# sections_ts = check_length(nit_loops(transports, services)[0], transports, "NIT")
+# Get list of ts_lists
+sections_ts = check_length(nit_loops(transports, services)[0], transports, "NIT")
 
-# # Generate sections
-# for idx, val in enumerate(sections_ts):
+# Generate NIT sections
+if len(sections_ts) != 0:
 
-#     nit = network_information_section(
-#         network_id = 41007,
-#         network_descriptor_loop = nit_loops(val, services)[1],
-#         transport_stream_loop = nit_loops(val, services)[2],
-#         version_number = 1,
-#         section_number = idx,
-#         last_section_number = len(sections_ts) - 1
-#     )
-#     nit_sec_res.append(nit)
+    for idx, i in enumerate(sections_ts):
 
-# # Write sections to nit.sec file
-# with open("./nit.sec", "wb") as DFILE:
-#     for sec in nit_sec_res: 
-#         print (sec)
-#         DFILE.write(sec.pack())
+        nit = network_information_section(
+            network_id = 41007,
+            network_descriptor_loop = nit_loops(i, services)[1], #Get first loop items
+            transport_stream_loop = nit_loops(i, services)[2], #Get second loop items
+            version_number = 1,
+            section_number = idx,
+            last_section_number = len(sections_ts) - 1
+        )
 
+        nit_sections.append(nit)
 
-# ############################################################################
-
-# #############################
-# # Bouquet Association Table #
-# #############################
+    # Write sections to nit.sec file
+    with open("./nit.sec", "wb") as DFILE:
+        for sec in nit_sections: 
+            print (sec)
+            DFILE.write(sec.pack())
+else:
+    pass
 
 
-# bat_sec_res = []
+#############################
+# Bouquet Association Table #
+#############################
 
-# # Get list of ts_lists
-# sections_ts = check_length(bat_loops(transports, services)[0], transports, "BAT")
+bat_sections = []
 
-# # Generate sections
-# for idx, val in enumerate(sections_ts):
+# Get list of ts_lists
+sections_ts = check_length(bat_loops(transports, services)[0], transports, "BAT")
 
-#     bat = bouquet_association_section(
-#         bouquet_id = 24385,
-#         bouquet_descriptor_loop = bat_loops(val, services)[1],
-#         transport_stream_loop = bat_loops(val, services)[2],
-#         version_number = 1,
-#         section_number = idx,
-#         last_section_number = len(sections_ts) - 1,
-#     )
+# Generate BAT sections
+if len(sections_ts) != 0:
 
-#     bat_sec_res.append(bat)
+    for idx, i in enumerate(sections_ts):
 
-# # Write sections to bat.sec file
-# with open("./bat.sec", "wb") as DFILE:
-#     for sec in bat_sec_res: 
-#         print (sec)
-#         DFILE.write(sec.pack())
+        bat = bouquet_association_section(
+            bouquet_id = 24385,
+            bouquet_descriptor_loop = bat_loops(i, services)[1], #Get first loop items
+            transport_stream_loop = bat_loops(i, services)[2], #Get second loop items
+            version_number = 1,
+            section_number = idx,
+            last_section_number = len(sections_ts) - 1,
+        )
 
-# #############################################################################################
+        bat_sections.append(bat)
 
-
-# #####################################################
-# # Service Description Table (ETSI EN 300 468 5.2.3) #
-# #####################################################
-
-# sdt_sec_res = []
-
-# # Get list of svc_lists
-# sections_ts = check_length(sdt_loops(services)[0], services, "SDT")
-
-# print (sections_ts)
-
-# # Generate sections
-# for idx, val in enumerate(sections_ts):
-
-#     print (len(sections_ts))
-
-#     sdt = service_description_section(
-#         transport_stream_id = 1,
-#         original_network_id = 41007,
-#         service_loop = sdt_loops(val)[1],
-#         version_number = 1,
-#         section_number = idx,
-#         last_section_number = len(sections_ts) - 1,
-#     )
-
-#     sdt_sec_res.append(sdt)
-
-# # Write sections to bat.sec file
-# with open("./sdt.sec", "wb") as DFILE:
-#     for sec in sdt_sec_res: 
-#         print (sec)
-#         DFILE.write(sec.pack())
-
+    # Write sections to bat.sec file
+    with open("./bat.sec", "wb") as DFILE:
+        for sec in bat_sections: 
+            print (sec)
+            DFILE.write(sec.pack())
+else:
+    pass
 
 
 #####################################################
-#  Event Information Table (ETSI EN 300 468 5.2.4)  #
+# Service Description Table (ETSI EN 300 468 5.2.3) #
 #####################################################
 
-#######################
-# EIT Actual Schedule #
-#######################
+sdt_sections = []
 
-# eit_sch_sec_res = []
+# Get list of svc_lists
+sections_ts = check_length(sdt_loops(services)[0], services, "SDT")
 
-# sections_ts = check_eit_length(eit_loops(events)[0], events, "EIT_Schedule")
+# Generate SDT sections
+if len(sections_ts) != 0:
 
-# for i in services2:
-#     for idx, val in enumerate(sections_ts):
+    for idx, i in enumerate(sections_ts):
 
-#         print (len(sections_ts))
+        sdt = service_description_section(
+            transport_stream_id = 1,
+            original_network_id = 41007,
+            service_loop = sdt_loops(i)[1], #Get loop items
+            version_number = 1,
+            section_number = idx,
+            last_section_number = len(sections_ts) - 1,
+        )
 
-#         eit_schedule = event_information_section(
-#             table_id = EIT_ACTUAL_TS_SCHEDULE14,
-#             service_id = i,
-#             transport_stream_id = 1,
-#             original_network_id = 41007,
-#             event_loop = eit_loops(val)[1],
-#             segment_last_section_number = 1,
-#             version_number = 1, 
-#             section_number = idx, # this is the second section
-#             last_section_number = len(sections_ts) - 1, 
-#         )
+        sdt_sections.append(sdt)
 
-#         eit_sch_sec_res.append(eit_schedule)
+    # Write sections to bat.sec file
+    with open("./sdt.sec", "wb") as DFILE:
+        for sec in sdt_sections: 
+            print (sec)
+            DFILE.write(sec.pack())
+else:
+    pass
 
-#     # Write sections to bat.sec file
-#     with open("./eit_sch.sec", "wb") as DFILE:
-#         for sec in eit_sch_sec_res: 
-#             print (sec)
-#             DFILE.write(sec.pack())
 
-################################
-# EIT Actual Present/Following #
-################################
+###############################################
+# EIT Actual Schedule (ETSI EN 300 468 5.2.4) #
+###############################################
 
-eit_act_pf_sec_res = []
+eit_schedule_sections = []
+
+sections_ts = check_eit_length(eit_loops(events)[0], events, "EIT_Schedule")
+
+if len(services2) != 0:
+
+    for i in services2:
+
+        if len(sections_ts) != 0:   
+
+            for idx, j in enumerate(sections_ts):
+
+                eit_schedule = event_information_section(
+                    table_id = EIT_ACTUAL_TS_SCHEDULE14,
+                    service_id = i,
+                    transport_stream_id = 1,
+                    original_network_id = 41007,
+                    event_loop = eit_loops(j)[1], #Get loop items
+                    segment_last_section_number = 1,
+                    version_number = 1, 
+                    section_number = idx,
+                    last_section_number = len(sections_ts) - 1, 
+                )
+
+                eit_schedule_sections.append(eit_schedule)
+
+            # Write sections to bat.sec file
+            with open("./eit_sch.sec", "wb") as DFILE:
+                for sec in eit_schedule_sections: 
+                    print (sec)
+                    DFILE.write(sec.pack())
+        else:
+            pass
+else:
+    pass
+
+
+########################################################
+# EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
+########################################################
+
+eit_actual_pf_sections = []
 
 sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Actual_PF")
 
-for idx, val in enumerate(sections_ts):
+if len(sections_ts) != 0:
 
-    print (len(sections_ts))
-    print (len(val))
+    for idx, i in enumerate(sections_ts):
+
+        for jdx, j in enumerate(i):
+
+            eit_actual_pf = event_information_section(
+                table_id = EIT_ACTUAL_TS_PRESENT_FOLLOWING,
+                service_id = i[0]["sid"],
+                transport_stream_id = 1,
+                original_network_id = 41007,
+                event_loop = eit_loops([j])[1], #Get loop items
+                segment_last_section_number = 1,
+                version_number = 1, 
+                section_number = jdx,
+                last_section_number = len(i) - 1, 
+            )
+
+            eit_actual_pf_sections.append(eit_actual_pf)
+
+    # Write sections to eit_act_pf.sec file
+    with open("./eit_act_pf.sec", "wb") as DFILE:
+        for sec in eit_actual_pf_sections: 
+            print (sec)
+            DFILE.write(sec.pack())
+else:
+    pass
 
 
-    for iidx, i in enumerate(val):
+#######################################################
+# EIT Other Present/Following (ETSI EN 300 468 5.2.4) #
+#######################################################
 
-        eit_actual_pf = event_information_section(
-            table_id = EIT_ACTUAL_TS_PRESENT_FOLLOWING,
-            service_id = val[0]["sid"],
-            transport_stream_id = 1,
-            original_network_id = 41007,
-            event_loop = eit_loops([i])[1],
-            segment_last_section_number = 1,
-            version_number = 1, 
-            section_number = iidx, # this is the second section
-            last_section_number = len(val) - 1, 
-        )
-
-        eit_act_pf_sec_res.append(eit_actual_pf)
-
-# Write sections to bat.sec file
-with open("./eit_act_pf.sec", "wb") as DFILE:
-    for sec in eit_act_pf_sec_res: 
-        print (sec)
-        DFILE.write(sec.pack())
-
-
-################################
-# EIT Other Present/Following  #
-################################
-
-eit_oth_pf_sec_res = []
+eit_other_pf_sections = []
 
 sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Other_PF")
 
-for idx, val in enumerate(sections_ts):
+for idx, i in enumerate(sections_ts):
 
-    print (len(sections_ts))
-    print (len(val))
-    
-
-    for iidx, i in enumerate(val):
+    for jdx, j in enumerate(i):
 
         eit_other_pf = event_information_section(
             table_id = EIT_ANOTHER_TS_PRESENT_FOLLOWING,
-            service_id = val[0]["sid"],
+            service_id = i[0]["sid"],
             transport_stream_id = 1,
             original_network_id = 41007,
-            event_loop = eit_loops([i])[1],
+            event_loop = eit_loops([j])[1], #Get loop items
             segment_last_section_number = 1,
             version_number = 1, 
-            section_number = iidx, # this is the second section
-            last_section_number = len(val) - 1, 
+            section_number = jdx,
+            last_section_number = len(i) - 1, 
         )
 
-        eit_oth_pf_sec_res.append(eit_other_pf)
+        eit_other_pf_sections.append(eit_other_pf)
 
-# Write sections to bat.sec file
+# Write sections to eit_oth_pf.sec file
 with open("./eit_oth_pf.sec", "wb") as DFILE:
-    for sec in eit_oth_pf_sec_res: 
+    for sec in eit_other_pf_sections: 
         print (sec)
         DFILE.write(sec.pack())
 
 
-#########################################################
+##############################################################################################
+#################### Prepare time configuration for TOT and TOT tables #######################
+##############################################################################################
+
+current_time = time.gmtime()
+current_local_time = time.localtime()
+
+# italian rules
+current_offset_polarity = 0x0 # positive
+if current_local_time.tm_isdst == 1:
+    start = 'DTSTART:%(year)04d%(month)02d%(day)02dT%(hour)02d%(minute)02d%(second)02d\n' % { 
+        "year": current_time[0], 
+        "month": current_time[1], 
+        "day": current_time[1], 
+        "hour" : 3, 
+        "minute": 0, 
+        "second": 0
+    }
+    start += 'RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10;COUNT=1' # last sunday of october
+    current_offset = 0x02
+    new_offset = 0x01
+else :
+    start = 'DTSTART:%(year)04d%(month)02d%(day)02dT%(hour)02d%(minute)02d%(second)02d\n' % { 
+        "year": current_time[0], 
+        "month": current_time[1], 
+        "day": current_time[1], 
+        "hour" : 2, 
+        "minute": 0, 
+        "second": 0
+    }
+    start += 'RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3;COUNT=1' # last sunday of march
+    current_offset = 0x01
+    new_offset = 0x02
+
+change_time = list(rrulestr(start))[0]
+
+###############################################################################################
+###############################################################################################
+###############################################################################################
+
+
+#####################################################
+#     Time Offset Table (ETSI EN 300 468 5.2.5)     #
+#####################################################
 
 tot = time_offset_section(
     descriptor_loop = [
@@ -296,49 +346,53 @@ tot = time_offset_section(
                     local_time_offset_polarity = 0,
                     local_time_offset_hour = 6,
                     local_time_offset_minute = 0,
-                    year_of_change = get_date()[0], 
-                    month_of_change = get_date()[1],
-                    day_of_change = get_date()[2],
-                    hour_of_change = 0,
-                    minute_of_change = 0,
-                    second_of_change = 0,
-                    next_time_offset_hour = 6,
-                    next_time_offset_minute = 0
+                    year_of_change = change_time.year-1900, 
+                    month_of_change = change_time.month,
+                    day_of_change = change_time.day,
+                    hour_of_change = int(str(((change_time.hour / 10) * 16) + (change_time.hour % 10)).split('.')[0]),
+                    minute_of_change = int(str(((change_time.minute / 10) * 16) + (change_time.minute % 10)).split('.')[0]),
+                    second_of_change = int(str(((change_time.second / 10) * 16) + (change_time.second % 10)).split('.')[0]),
+                    next_time_offset_hour = new_offset,
+                    next_time_offset_minute = 0x00
                 )
             ]
         )
     ],
-    year = get_date()[0], # since 1900. If now 2019, then 2019 - 1900 = 119
-    month = get_date()[1],
-    day = get_date()[2],
-    hour = get_date()[3], # use hex like decimals
-    minute = get_date()[4],
-    second = get_date()[5],
+    year = current_time[0]-1900, # since 1900. If now 2019, then 2019 - 1900 = 119
+    month = current_time[1],
+    day = current_time[2],
+    hour = int(str(((current_time[3] / 10) * 16) + (current_time[3] % 10)).split('.')[0]),
+    minute = int(str(((current_time[4] / 10) * 16) + (current_time[4] % 10)).split('.')[0]),
+    second = int(str(((current_time[5] / 10) * 16) + (current_time[5] % 10)).split('.')[0]),
     version_number = 1,
     section_number = 0,
     last_section_number = 0
     )
 
+# Write sections to tot.sec file
 with open("./tot.sec", "wb") as DFILE:
     DFILE.write(tot.pack())
 
-#####################################################
-#  Time Description Table (ETSI EN 300 468 5.2.5)   #
-#####################################################
+
+####################################################
+#  Time Description Table (ETSI EN 300 468 5.2.5)  #
+####################################################
 
 # TDT should be replaced at regeneration run time
-
+    
 tdt = time_date_section(
-    year = get_date()[0], # since 1900. If now 2019, then 2019 - 1900 = 119
-    month = get_date()[1],
-    day = get_date()[2],
-    hour = get_date()[3], # use hex like decimals
-    minute = get_date()[4],
-    second = get_date()[5],
+    year = current_time[0]-1900, # since 1900. If now 2019, then 2019 - 1900 = 119
+    month = current_time[1],
+    day = current_time[2],
+    hour = int(str(((current_time[3] / 10) * 16) + (current_time[3] % 10)).split('.')[0]),
+    minute = int(str(((current_time[4] / 10) * 16) + (current_time[4] % 10)).split('.')[0]),
+    second = int(str(((current_time[5] / 10) * 16) + (current_time[5] % 10)).split('.')[0]),
     version_number = 1,
     section_number = 0,
     last_section_number = 0,
     )
 
+# Write sections to tdt.sec file
 with open("./tdt.sec", "wb") as DFILE:
     DFILE.write(tdt.pack())
+

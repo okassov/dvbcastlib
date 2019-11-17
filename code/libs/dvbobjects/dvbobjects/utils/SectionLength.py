@@ -46,9 +46,6 @@ def event_chunks_list(alist, parts=2):
 
     result = [ alist[i:i+parts] for i in range(0, len(alist), parts)]
 
-    print ("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!")
-    print (result)
-
     return [ alist[i:i+parts] for i in range(0, len(alist), parts)]
 
 
@@ -278,7 +275,7 @@ def check_length(item_length, items_list, table):
                 check_length(sdt_loops(i)[0], i, table)
             elif table == "EIT":
                 check_length(eit_loops(i)[0], i, table)
-    print (ts_section_list)
+
     return ts_section_list
 
 

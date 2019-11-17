@@ -33,13 +33,11 @@ class time_offset_section(DVBobject):
             0xF000 | (len(tl_bytes) & 0xFFF),
             tl_bytes)
 
-        return data + self.crc_32_new(data)
+        return data + self.crc_32(data)
     
-    def crc_32_new(self, data):
+    def crc_32(self, data):
         b = bytearray(data)
         crc32_func = crcmod.predefined.mkCrcFun('crc-32-mpeg')
-        print (crc32_func(memoryview(b)))
-        print (hex(crc32_func(memoryview(b))))
         crc = crc32_func(memoryview(b))
 
         return pack("!L", crc)
