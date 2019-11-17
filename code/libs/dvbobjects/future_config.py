@@ -9,13 +9,12 @@ from dvbobjects.PSI.BAT import *
 from dvbobjects.PSI.EIT import *
 from dvbobjects.PSI.TDT import *
 from dvbobjects.PSI.TOT import *
-from dvbobjects.utils.SectionLength import *
-from dvbobjects.utils.DateTime import *
 from dvbobjects.DVB.Descriptors import *
 from dvbobjects.MPEG.Descriptors import *
+from dvbobjects.utils.SectionLength import *
+from datetime import *
 from dateutil.rrule import *
 from dateutil.parser import *
-from datetime import *
 import time
 
 
@@ -33,7 +32,8 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
 
 services2 = [100,200,300,400,500,600,700,800,900,901,902,903,904,905,906,
             101,201,303,401,501,601,701,801,907,908,909,910,911,912,913]
-transports = [1,2,3,4]
+            
+transports = [1,2,3,4,5,6,7,8]
 
 events = [
             {"event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 

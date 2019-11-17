@@ -1,11 +1,8 @@
 #! /usr/bin/env python
 
-import string
 import os
-from dvbobjects.PSI.PAT import *
 from dvbobjects.PSI.NIT import *
 from dvbobjects.PSI.SDT import *
-from dvbobjects.PSI.PMT import *
 from dvbobjects.PSI.BAT import *
 from dvbobjects.PSI.EIT import *
 from dvbobjects.DVB.Descriptors import *
@@ -38,13 +35,12 @@ def split_list(alist, parts=2):
     return [ alist[i*length // parts: (i+1)*length // parts] 
              for i in range(parts) ]
 
+
 def event_chunks_list(alist, parts=2):
     '''This function divide EIT event list into 
     chunks lists with len == 2'''
 
     length = len(alist)
-
-    result = [ alist[i:i+parts] for i in range(0, len(alist), parts)]
 
     return [ alist[i:i+parts] for i in range(0, len(alist), parts)]
 
@@ -55,6 +51,7 @@ def sec_len(first_loop, second_loop = []):
     descriptors as args. Return section length'''
 
     if len(second_loop) != 0:
+
         # pack first_loop_descriptors
         fl_bytes = b"".join(
             map(lambda x: x.pack(),
@@ -70,6 +67,7 @@ def sec_len(first_loop, second_loop = []):
         return len(fl_bytes) + len(sl_bytes)
 
     else:
+        
         # pack only first_loop_descriptors
         fl_bytes = b"".join(
             map(lambda x: x.pack(),
@@ -257,8 +255,6 @@ def check_length(item_length, items_list, table):
         ts_section_list = nit_ts_for_sections
     elif table == "SDT":
         ts_section_list = sdt_svc_for_sections
-    elif table == "EIT":
-        ts_section_list = eit_for_sections
     else:
         pass
 
@@ -273,8 +269,6 @@ def check_length(item_length, items_list, table):
                 check_length(nit_loops(i, services)[0], i, table)
             elif table == "SDT":
                 check_length(sdt_loops(i)[0], i, table)
-            elif table == "EIT":
-                check_length(eit_loops(i)[0], i, table)
 
     return ts_section_list
 
