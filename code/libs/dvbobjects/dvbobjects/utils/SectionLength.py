@@ -15,6 +15,8 @@ bat_ts_for_sections = []
 nit_ts_for_sections = []
 sdt_svc_for_sections = []
 eit_sched_for_sections = []
+eit_act_pf_for_sections = []
+eit_oth_pf_for_sections = []
 
 services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1], [800, 1], [900, 1],
             [110, 1], [210, 1], [310, 1], [410, 1], [510, 1], [610, 1], [710, 1], [810, 1], [910, 1],
@@ -233,7 +235,7 @@ def eit_loops(events_list):
                     text = b"asdasd"
                 ),
                 short_event_descriptor (
-                    ISO639_language_code = b"ITA", 
+                    ISO639_language_code = b"KAZ", 
                     event_name = i["event_name"],
                     text = i["text"], 
                 )    
@@ -281,8 +283,8 @@ def check_length(item_length, items_list, table):
 
 
 def check_eit_length(item_length, items_list, table):
-    '''This function check length of second loop for all
-    transports in this loop. If length of loop > 1024 - 3,
+    '''This function check length of EIT dexcriptors loop. 
+    If length of loop > 4096 - 3,
     then it's divides trasnport list to multiple list like 1/2
     and agian check this transport lists. Until the length 
     is not consistent with the standard.'''
@@ -291,16 +293,23 @@ def check_eit_length(item_length, items_list, table):
 
     if table == "EIT_Schedule":
         ts_section_list = eit_sched_for_sections
+    if table == "EIT_Actual_PF":
+        ts_section_list = eit_act_pf_for_sections
+    if table == "EIT_Other_PF":
+        ts_section_list = eit_oth_pf_for_sections
     else:
         pass
 
-    if 0 <= (item_length + 13) <= (section_max_size - 3):
-        section = event_chunks_list(items_list)
-        for i in section:
-            if table == "EIT_Schedule":
-                ts_section_list.append(i)
-            else:
-                pass
-    print (ts_section_list)
+    section = event_chunks_list(items_list)
+    for i in section:
+        if table == "EIT_Schedule":
+            ts_section_list.append(i)
+        if table == "EIT_Actual_PF":
+            ts_section_list.append(i)
+        if table == "EIT_Other_PF":
+            ts_section_list.append(i)
+        else:
+            pass
+
     return ts_section_list
 

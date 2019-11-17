@@ -62,35 +62,15 @@ events = [
             {"event_id": 28, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
         ]
 
-events2 = [ {"service_id": 100},
-            {"event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 3, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 4, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 5, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 6, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 7, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 8, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 9, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 10, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 11, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 12, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 13, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 14, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 15, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 16, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 17, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 18, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 19, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 20, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 21, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 22, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 23, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 24, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 25, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 26, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 27, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 28, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+events2 = [
+            {"sid": 100, "event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"sid": 100, "event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"},
+            {"sid": 200, "event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"sid": 200, "event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"},
+            {"sid": 300, "event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"sid": 300, "event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"},
+            {"sid": 400, "event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"sid": 400, "event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"},
         ]
 
 
@@ -193,43 +173,115 @@ events2 = [ {"service_id": 100},
 
 
 
+#####################################################
+#  Event Information Table (ETSI EN 300 468 5.2.4)  #
+#####################################################
 
-####################################################################
+#######################
+# EIT Actual Schedule #
+#######################
 
-eit_sch_sec_res = []
+# eit_sch_sec_res = []
 
-sections_ts = check_eit_length(eit_loops(events)[0], events, "EIT_Schedule")
+# sections_ts = check_eit_length(eit_loops(events)[0], events, "EIT_Schedule")
 
-for i in services2:
-    for idx, val in enumerate(sections_ts):
+# for i in services2:
+#     for idx, val in enumerate(sections_ts):
 
-        print (len(sections_ts))
+#         print (len(sections_ts))
 
-        eit_schedule = event_information_section(
-            table_id = EIT_ACTUAL_TS_SCHEDULE14,
-            service_id = i,
+#         eit_schedule = event_information_section(
+#             table_id = EIT_ACTUAL_TS_SCHEDULE14,
+#             service_id = i,
+#             transport_stream_id = 1,
+#             original_network_id = 41007,
+#             event_loop = eit_loops(val)[1],
+#             segment_last_section_number = 1,
+#             version_number = 1, 
+#             section_number = idx, # this is the second section
+#             last_section_number = len(sections_ts) - 1, 
+#         )
+
+#         eit_sch_sec_res.append(eit_schedule)
+
+#     # Write sections to bat.sec file
+#     with open("./eit_sch.sec", "wb") as DFILE:
+#         for sec in eit_sch_sec_res: 
+#             print (sec)
+#             DFILE.write(sec.pack())
+
+################################
+# EIT Actual Present/Following #
+################################
+
+eit_act_pf_sec_res = []
+
+sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Actual_PF")
+
+for idx, val in enumerate(sections_ts):
+
+    print (len(sections_ts))
+    print (len(val))
+
+
+    for iidx, i in enumerate(val):
+
+        eit_actual_pf = event_information_section(
+            table_id = EIT_ACTUAL_TS_PRESENT_FOLLOWING,
+            service_id = val[0]["sid"],
             transport_stream_id = 1,
             original_network_id = 41007,
-            event_loop = eit_loops(val)[1],
+            event_loop = eit_loops([i])[1],
             segment_last_section_number = 1,
             version_number = 1, 
-            section_number = idx, # this is the second section
-            last_section_number = len(sections_ts) - 1, 
+            section_number = iidx, # this is the second section
+            last_section_number = len(val) - 1, 
         )
 
-        eit_sch_sec_res.append(eit_schedule)
+        eit_act_pf_sec_res.append(eit_actual_pf)
 
-    # Write sections to bat.sec file
-    with open("./eit.sec", "wb") as DFILE:
-        for sec in eit_sch_sec_res: 
-            print (sec)
-            DFILE.write(sec.pack())
-
-
+# Write sections to bat.sec file
+with open("./eit_act_pf.sec", "wb") as DFILE:
+    for sec in eit_act_pf_sec_res: 
+        print (sec)
+        DFILE.write(sec.pack())
 
 
+################################
+# EIT Other Present/Following  #
+################################
 
+eit_oth_pf_sec_res = []
 
+sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Other_PF")
+
+for idx, val in enumerate(sections_ts):
+
+    print (len(sections_ts))
+    print (len(val))
+    
+
+    for iidx, i in enumerate(val):
+
+        eit_other_pf = event_information_section(
+            table_id = EIT_ANOTHER_TS_PRESENT_FOLLOWING,
+            service_id = val[0]["sid"],
+            transport_stream_id = 1,
+            original_network_id = 41007,
+            event_loop = eit_loops([i])[1],
+            segment_last_section_number = 1,
+            version_number = 1, 
+            section_number = iidx, # this is the second section
+            last_section_number = len(val) - 1, 
+        )
+
+        eit_oth_pf_sec_res.append(eit_other_pf)
+
+# Write sections to bat.sec file
+with open("./eit_oth_pf.sec", "wb") as DFILE:
+    for sec in eit_oth_pf_sec_res: 
+        print (sec)
+        DFILE.write(sec.pack())
 
 
 #########################################################
