@@ -6,19 +6,14 @@ from dvbobjects.PSI.NIT import *
 from dvbobjects.PSI.SDT import *
 from dvbobjects.PSI.PMT import *
 from dvbobjects.PSI.BAT import *
+from dvbobjects.PSI.EIT import *
+from dvbobjects.PSI.TDT import *
+from dvbobjects.PSI.TOT import *
 from dvbobjects.utils.SectionLength import *
+from dvbobjects.utils.DateTime import *
 from dvbobjects.DVB.Descriptors import *
 from dvbobjects.MPEG.Descriptors import *
 
-
-test_transport_stream_id = 1
-test_transport_stream_id_2 = 2
-test_transport_stream_id_3 = 3
-test_transport_stream_id_4 = 4
-test_transport_stream_id_5 = 5
-test_transport_stream_id_6 = 6
-test_original_transport_stream_id = 1
-test1_service_id = 1
 
 
 services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1], [800, 1], [900, 1],
@@ -32,84 +27,266 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
             [180, 1], [280, 1], [380, 1], [480, 1], [580, 1], [680, 1], [780, 1], [880, 1], [980, 1],
             [190, 1], [290, 1], [390, 1], [490, 1]]
 
+services2 = [100,200,300,400,500,600,700,800,900,901,902,903,904,905,906,
+            101,201,303,401,501,601,701,801,907,908,909,910,911,912,913]
 transports = [1,2,3,4]
 
+events = [
+            {"event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 3, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 4, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 5, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 6, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 7, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 8, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 9, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 10, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 11, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 12, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 13, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 14, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 15, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 16, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 17, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 18, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 19, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 20, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 21, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 22, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 23, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 24, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 25, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 26, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 27, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 28, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+        ]
 
-#############################
-# Network Information Table #
-#############################
+events2 = [ {"service_id": 100},
+            {"event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 3, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 4, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 5, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 6, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 7, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 8, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 9, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 10, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 11, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 12, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 13, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 14, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 15, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 16, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 17, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 18, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 19, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 20, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 21, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 22, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 23, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 24, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+            {"event_id": 25, "event_name": b"First Event", "text": b"First Event Text"}, 
+            {"event_id": 26, "event_name": b"Second Event", "text": b"Second Event Text"}, 
+            {"event_id": 27, "event_name": b"Third Event", "text": b"Third Event Text"}, 
+            {"event_id": 28, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
+        ]
 
-nit_sec_res = []
 
-# Get list of ts_lists
-sections_ts = check_length(nit_loops(transports, services)[0], transports, "NIT")
+# #############################
+# # Network Information Table #
+# #############################
 
-# Generate sections
-for idx, val in enumerate(sections_ts):
+# nit_sec_res = []
 
-    nit = network_information_section(
-        network_id = 41007,
-        network_descriptor_loop = nit_loops(val, services)[1],
-        transport_stream_loop = nit_loops(val, services)[2],
-        version_number = 1,
-        section_number = idx,
-        last_section_number = len(sections_ts) - 1
+# # Get list of ts_lists
+# sections_ts = check_length(nit_loops(transports, services)[0], transports, "NIT")
+
+# # Generate sections
+# for idx, val in enumerate(sections_ts):
+
+#     nit = network_information_section(
+#         network_id = 41007,
+#         network_descriptor_loop = nit_loops(val, services)[1],
+#         transport_stream_loop = nit_loops(val, services)[2],
+#         version_number = 1,
+#         section_number = idx,
+#         last_section_number = len(sections_ts) - 1
+#     )
+#     nit_sec_res.append(nit)
+
+# # Write sections to nit.sec file
+# with open("./nit.sec", "wb") as DFILE:
+#     for sec in nit_sec_res: 
+#         print (sec)
+#         DFILE.write(sec.pack())
+
+
+# ############################################################################
+
+# #############################
+# # Bouquet Association Table #
+# #############################
+
+
+# bat_sec_res = []
+
+# # Get list of ts_lists
+# sections_ts = check_length(bat_loops(transports, services)[0], transports, "BAT")
+
+# # Generate sections
+# for idx, val in enumerate(sections_ts):
+
+#     bat = bouquet_association_section(
+#         bouquet_id = 24385,
+#         bouquet_descriptor_loop = bat_loops(val, services)[1],
+#         transport_stream_loop = bat_loops(val, services)[2],
+#         version_number = 1,
+#         section_number = idx,
+#         last_section_number = len(sections_ts) - 1,
+#     )
+
+#     bat_sec_res.append(bat)
+
+# # Write sections to bat.sec file
+# with open("./bat.sec", "wb") as DFILE:
+#     for sec in bat_sec_res: 
+#         print (sec)
+#         DFILE.write(sec.pack())
+
+# #############################################################################################
+
+
+# #####################################################
+# # Service Description Table (ETSI EN 300 468 5.2.3) #
+# #####################################################
+
+# sdt_sec_res = []
+
+# # Get list of svc_lists
+# sections_ts = check_length(sdt_loops(services)[0], services, "SDT")
+
+# print (sections_ts)
+
+# # Generate sections
+# for idx, val in enumerate(sections_ts):
+
+#     print (len(sections_ts))
+
+#     sdt = service_description_section(
+#         transport_stream_id = 1,
+#         original_network_id = 41007,
+#         service_loop = sdt_loops(val)[1],
+#         version_number = 1,
+#         section_number = idx,
+#         last_section_number = len(sections_ts) - 1,
+#     )
+
+#     sdt_sec_res.append(sdt)
+
+# # Write sections to bat.sec file
+# with open("./sdt.sec", "wb") as DFILE:
+#     for sec in sdt_sec_res: 
+#         print (sec)
+#         DFILE.write(sec.pack())
+
+
+
+
+####################################################################
+
+eit_sch_sec_res = []
+
+sections_ts = check_eit_length(eit_loops(events)[0], events, "EIT_Schedule")
+
+for i in services2:
+    for idx, val in enumerate(sections_ts):
+
+        print (len(sections_ts))
+
+        eit_schedule = event_information_section(
+            table_id = EIT_ACTUAL_TS_SCHEDULE14,
+            service_id = i,
+            transport_stream_id = 1,
+            original_network_id = 41007,
+            event_loop = eit_loops(val)[1],
+            segment_last_section_number = 1,
+            version_number = 1, 
+            section_number = idx, # this is the second section
+            last_section_number = len(sections_ts) - 1, 
+        )
+
+        eit_sch_sec_res.append(eit_schedule)
+
+    # Write sections to bat.sec file
+    with open("./eit.sec", "wb") as DFILE:
+        for sec in eit_sch_sec_res: 
+            print (sec)
+            DFILE.write(sec.pack())
+
+
+
+
+
+
+
+
+#########################################################
+
+tot = time_offset_section(
+    descriptor_loop = [
+        local_time_offset_descriptor(
+            local_time_offset_loop = [
+                local_time_offset_loop_item(
+                    ISO_639_language_code = b'kaz',
+                    country_region_id = 1,
+                    local_time_offset_polarity = 0,
+                    local_time_offset_hour = 6,
+                    local_time_offset_minute = 0,
+                    year_of_change = get_date()[0], 
+                    month_of_change = get_date()[1],
+                    day_of_change = get_date()[2],
+                    hour_of_change = 0,
+                    minute_of_change = 0,
+                    second_of_change = 0,
+                    next_time_offset_hour = 6,
+                    next_time_offset_minute = 0
+                )
+            ]
+        )
+    ],
+    year = get_date()[0], # since 1900. If now 2019, then 2019 - 1900 = 119
+    month = get_date()[1],
+    day = get_date()[2],
+    hour = get_date()[3], # use hex like decimals
+    minute = get_date()[4],
+    second = get_date()[5],
+    version_number = 1,
+    section_number = 0,
+    last_section_number = 0
     )
-    nit_sec_res.append(nit)
 
-# Write sections to nit.sec file
-with open("./nit.sec", "wb") as DFILE:
-    for sec in nit_sec_res: 
-        print (sec)
-        DFILE.write(sec.pack())
+with open("./tot.sec", "wb") as DFILE:
+    DFILE.write(tot.pack())
 
+#####################################################
+#  Time Description Table (ETSI EN 300 468 5.2.5)   #
+#####################################################
 
-############################################################################
+# TDT should be replaced at regeneration run time
 
-#############################
-# Bouquet Association Table #
-#############################
-
-
-bat_sec_res = []
-
-# Get list of ts_lists
-sections_ts = check_length(bat_loops(transports, services)[0], transports, "BAT")
-
-# Generate sections
-for idx, val in enumerate(sections_ts):
-
-    bat = bouquet_association_section(
-        bouquet_id = 24385,
-        bouquet_descriptor_loop = bat_loops(val, services)[1],
-        transport_stream_loop = bat_loops(val, services)[2],
-        version_number = 1,
-        section_number = idx,
-        last_section_number = len(sections_ts) - 1,
+tdt = time_date_section(
+    year = get_date()[0], # since 1900. If now 2019, then 2019 - 1900 = 119
+    month = get_date()[1],
+    day = get_date()[2],
+    hour = get_date()[3], # use hex like decimals
+    minute = get_date()[4],
+    second = get_date()[5],
+    version_number = 1,
+    section_number = 0,
+    last_section_number = 0,
     )
 
-    bat_sec_res.append(bat)
-
-# Write sections to bat.sec file
-with open("./bat.sec", "wb") as DFILE:
-    for sec in bat_sec_res: 
-        print (sec)
-        DFILE.write(sec.pack())
-
-#############################################################################################
-
-
-
-
-
-
-
-# out = open("./nit.sec", "wb")
-# out.write(nit.pack())
-# out.close
-# out = open("./nit.sec", "wb") # python  flush bug
-# out.close
-# os.system('/usr/local/bin/sec2ts 16 < ./nit.sec > ./firstnit.ts')
-
-
-
+with open("./tdt.sec", "wb") as DFILE:
+    DFILE.write(tdt.pack())

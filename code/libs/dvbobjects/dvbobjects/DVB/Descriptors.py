@@ -1300,3 +1300,28 @@ class logical_channel_descriptor(Descriptor):
 
         return pack(fmt, lcn_service_bytes)
 
+
+#############################################################################
+class epg_information_descriptor_loop_item(DVBobject):
+
+    def pack(self):
+
+        fmt = "!HB"
+    
+        return pack(fmt, 
+            self.parental_rating,
+            self.inverse_CGMS_A_value)    
+
+class epg_information_descriptor(Descriptor):
+
+    descriptor_tag = 0xCC
+
+    def bytes(self):
+
+        epg_information_bytes = b"".join(
+            map(lambda x: x.pack(),    
+            self.epg_information_loop),)                                    
+
+        fmt = "!%ds" % len(epg_information_bytes)
+
+        return pack(fmt, epg_information_bytes)

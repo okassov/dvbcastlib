@@ -11,6 +11,7 @@ class time_date_section(DVBobject):
     def pack(self):
     
         date = MJD_convert(self.year, self.month, self.day)
+        print (date)
 
         fmt = "!BHHBBB"
 
