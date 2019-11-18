@@ -1,7 +1,5 @@
 import psycopg2
 
-bat_to_transports = []
-
 def connect():
     '''This function connect to PSQL DB
     and return connection'''
@@ -19,6 +17,7 @@ def connect():
     except:
         print ("Error")
 
+bat_to_transports = []
 
 def get_bat_ts(conn, bat_id):
     '''This function return DISTINCT (NOT DUPLICATE) transport id's
@@ -51,7 +50,7 @@ def get_bat_svc(conn, svc_id):
         cur.close()
 
 
-def bat_ts_list(conn, ts_list):
+def bat_ts_list(conn, ts_list, bat_id):
     '''This function generate and return list
     for BAT Generation. Get transports list as ARG'''
 
@@ -59,7 +58,7 @@ def bat_ts_list(conn, ts_list):
 
         cur = conn.cursor()
 
-        cur.execute("SELECT service_id FROM bat_to_transports WHERE transport_id=%s" % ts[0])
+        cur.execute("SELECT service_id FROM bat_to_transports WHERE transport_id=%s and bat_id=%s" % (ts[0], bat_id))
 
         bat_to_transports.append({"ts": ts[0], "services": []})
 
@@ -83,10 +82,12 @@ def bat_ts_list(conn, ts_list):
         cur.close()
 
 
-def bat_sql_main():
+def bat_sql_main(bat_id):
 
     conn = connect()
+    
+    bat_ts_list(conn, get_bat_ts(conn, bat_id), bat_id)
 
-    bat_ts_list(conn, get_bat_ts(conn, 1))
+    print (bat_to_transports)
 
     return bat_to_transports

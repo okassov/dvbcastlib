@@ -197,7 +197,10 @@ services3 = [
     },
 ]
 
-services4 = bat_sql_main()
+
+
+
+
 
 transports = [1,2,3,4,5,6,7,8,9,10]
 
@@ -281,36 +284,45 @@ else:
 #############################
 # Bouquet Association Table #
 #############################
+def BAT(bouquet_id, transports):
+    bat_sections = []
 
-bat_sections = []
+    # Get list of ts_lists
+    sections_ts = check_length(bat_loops(transports, services)[0], transports, "BAT")
 
-# Get list of ts_lists
-sections_ts = check_length(bat_loops(services4, services)[0], services4, "BAT")
+    print (sections_ts)
     
-# Generate BAT sections
-if len(sections_ts) != 0:
+    # Generate BAT sections
+    if len(sections_ts) != 0:
 
-    for idx, i in enumerate(sections_ts):
+        for idx, i in enumerate(sections_ts):
 
-        bat = bouquet_association_section(
-            bouquet_id = 24385,
-            bouquet_descriptor_loop = bat_loops(i, services)[1], #Get first loop items
-            transport_stream_loop = bat_loops(i, services)[2], #Get second loop items
-            version_number = 1,
-            section_number = idx,
-            last_section_number = len(sections_ts) - 1,
-        )
+            bat = bouquet_association_section(
+                bouquet_id = bouquet_id,
+                bouquet_descriptor_loop = bat_loops(i, services)[1], #Get first loop items
+                transport_stream_loop = bat_loops(i, services)[2], #Get second loop items
+                version_number = 1,
+                section_number = idx,
+                last_section_number = len(sections_ts) - 1,
+            )
 
-        bat_sections.append(bat)
+            bat_sections.append(bat)
 
-    # Write sections to bat.sec file
-    with open("./bat.sec", "wb") as DFILE:
-        for sec in bat_sections: 
-            print (sec)
-            DFILE.write(sec.pack())
-else:
-    pass
+        # Write sections to bat.sec file
+        with open("./bat.sec", "wb") as DFILE:
+            for sec in bat_sections: 
+                print (sec)
+                DFILE.write(sec.pack())
+    else:
+        pass
 
+bats = [{"bouquet_id": 24385, "id": 1}]
+
+for bat in bats:
+    services4 = bat_sql_main(bat["id"])
+    BAT(bat["bouquet_id"], services4)
+# services4 = bat_sql_main(1)
+# BAT(24385, services4)
 
 #############################################################
 # Service Description Actual Table  (ETSI EN 300 468 5.2.3) #
