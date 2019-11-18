@@ -10,7 +10,8 @@ from dvbobjects.MPEG.Descriptors import *
 
 bat_ts_for_sections = []
 nit_ts_for_sections = []
-sdt_svc_for_sections = []
+sdt_act_for_sections = []
+sdt_oth_for_sections = []
 eit_sched_for_sections = []
 eit_act_pf_for_sections = []
 eit_oth_pf_for_sections = []
@@ -26,6 +27,65 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
             [180, 1], [280, 1], [380, 1], [480, 1], [580, 1], [680, 1], [780, 1], [880, 1], [980, 1],
             [190, 1], [290, 1], [390, 1], [490, 1]]
 
+services2 = [100,200,300,400,500,600,700,800,900,901,902,903,904,905,906,
+            101,201,303,401,501,601,701,801,907,908,909,910,911,912,913,]
+
+services3 = [{"sid": 200, "lcn": 10, "service_type": 1}, 
+            {"sid": 201, "lcn": 10, "service_type": 1}, 
+            {"sid": 202, "lcn": 10, "service_type": 1}, 
+            {"sid": 203, "lcn": 10, "service_type": 1},
+            {"sid": 204, "lcn": 10, "service_type": 1}, 
+            {"sid": 205, "lcn": 10, "service_type": 1}, 
+            {"sid": 206, "lcn": 10, "service_type": 1}, 
+            {"sid": 207, "lcn": 10, "service_type": 1},
+            {"sid": 208, "lcn": 10, "service_type": 1}, 
+            {"sid": 209, "lcn": 10, "service_type": 1}, 
+            {"sid": 210, "lcn": 10, "service_type": 1}, 
+            {"sid": 211, "lcn": 10, "service_type": 1},
+            {"sid": 212, "lcn": 10, "service_type": 1}, 
+            {"sid": 213, "lcn": 10, "service_type": 1}, 
+            {"sid": 214, "lcn": 10, "service_type": 1}, 
+            {"sid": 215, "lcn": 10, "service_type": 1},
+            {"sid": 216, "lcn": 10, "service_type": 1}, 
+            {"sid": 217, "lcn": 10, "service_type": 1},
+            {"sid": 218, "lcn": 10, "service_type": 1}, 
+            {"sid": 219, "lcn": 10, "service_type": 1}, 
+            {"sid": 220, "lcn": 10, "service_type": 1}, 
+            {"sid": 221, "lcn": 10, "service_type": 1},
+            {"sid": 222, "lcn": 10, "service_type": 1}, 
+            {"sid": 223, "lcn": 10, "service_type": 1},
+            {"sid": 224, "lcn": 10, "service_type": 1}, 
+            {"sid": 225, "lcn": 10, "service_type": 1}, 
+            {"sid": 226, "lcn": 10, "service_type": 1}, 
+            {"sid": 227, "lcn": 10, "service_type": 1},
+            {"sid": 228, "lcn": 10, "service_type": 1}, 
+            {"sid": 229, "lcn": 10, "service_type": 1}, 
+            {"sid": 230, "lcn": 10, "service_type": 1}, 
+            {"sid": 231, "lcn": 10, "service_type": 1},
+            {"sid": 232, "lcn": 10, "service_type": 1}, 
+            {"sid": 233, "lcn": 10, "service_type": 1}, 
+            {"sid": 234, "lcn": 10, "service_type": 1}, 
+            {"sid": 235, "lcn": 10, "service_type": 1},
+            {"sid": 236, "lcn": 10, "service_type": 1}, 
+            {"sid": 237, "lcn": 10, "service_type": 1}, 
+            {"sid": 238, "lcn": 10, "service_type": 1}, 
+            {"sid": 239, "lcn": 10, "service_type": 1},
+            {"sid": 240, "lcn": 10, "service_type": 1}, 
+            {"sid": 241, "lcn": 10, "service_type": 1}, 
+            {"sid": 242, "lcn": 10, "service_type": 1}, 
+            {"sid": 243, "lcn": 10, "service_type": 1},
+            {"sid": 244, "lcn": 10, "service_type": 1}, 
+            {"sid": 245, "lcn": 10, "service_type": 1},
+            {"sid": 246, "lcn": 10, "service_type": 1}, 
+            {"sid": 247, "lcn": 10, "service_type": 1}, 
+            {"sid": 248, "lcn": 10, "service_type": 1}, 
+            {"sid": 249, "lcn": 10, "service_type": 1},
+            {"sid": 250, "lcn": 10, "service_type": 1}, 
+            {"sid": 251, "lcn": 10, "service_type": 1},
+            {"sid": 252, "lcn": 10, "service_type": 1}, 
+            {"sid": 253, "lcn": 10, "service_type": 1}, 
+            {"sid": 254, "lcn": 10, "service_type": 1}, 
+            {"sid": 255, "lcn": 10, "service_type": 1},]
 
 def split_list(alist, parts=2):
     '''This function divide list into 2 parts'''
@@ -67,7 +127,7 @@ def sec_len(first_loop, second_loop = []):
         return len(fl_bytes) + len(sl_bytes)
 
     else:
-        
+
         # pack only first_loop_descriptors
         fl_bytes = b"".join(
             map(lambda x: x.pack(),
@@ -93,17 +153,35 @@ def bat_loops(transports_list, services_list):
 
     tdl = transport_stream_loop = [
             transport_stream_loop_item(
-                transport_stream_id = i,
+                transport_stream_id = i["ts"],
                 original_network_id = 41007,
                 transport_descriptor_loop = [
                     service_list_descriptor(
                         dvb_service_descriptor_loop = [
                             service_descriptor_loop_item(
-                                 service_ID = i[0], 
-                                 service_type = i[1],
-                            ) for i in services_list
+                                 service_ID = svc["sid"], 
+                                 service_type = svc["type"],
+                            ) for svc in i["services"]
                         ],
-                    )
+                    ),
+                    private_data_specifier_descriptor(private_data_specifier = 24577),
+                    e2_descriptor(
+                        e2_descriptor_loop = [
+                            e2_descriptor_loop_item(
+                                service_ID = svc["sid"],
+                                logical_channel_number = svc["lcn"],
+                            ) for svc in i["services"]
+                        ],
+                    ),
+                    e4_descriptor(
+                        e4_descriptor_loop = [
+                            e4_descriptor_loop_item(
+                                service_ID = svc["sid"],
+                                general_order = svc["lcn"],
+                                order_by_type = svc["lcn"],
+                            ) for svc in i["services"]
+                        ],
+                    ),
                 ]
             ) for i in transports_list
         ]
@@ -130,15 +208,15 @@ def nit_loops(transports_list, services_list):
 
     tdl = transport_stream_loop = [
         transport_stream_loop_item(
-            transport_stream_id = i,
+            transport_stream_id = i["ts"],
             original_network_id = 41007,
             transport_descriptor_loop = [
                 service_list_descriptor(
                     dvb_service_descriptor_loop = [
                         service_descriptor_loop_item(
-                             service_ID = i[0], 
-                             service_type = i[1],
-                        ) for i in services_list
+                             service_ID = svc["sid"], 
+                             service_type = svc["type"],
+                        ) for svc in i["services"]
                     ]
                 ),
                 transport_stream_sat_descriptor(
@@ -213,6 +291,13 @@ def eit_loops(events_list):
                     ISO_639_language_code = b"rus",
                     text_char = b"Description of component"
                 ),
+                ca_identifier_descriptor (
+                    ca_identifier_descriptor_loop = [
+                        ca_identifier_descriptor_loop_item (
+                            ca_system_id = 2514
+                        )
+                    ]
+                ),
                 parental_rating_descriptor (
                     country_code = b"KAZ",
                     rating = 1
@@ -253,8 +338,10 @@ def check_length(item_length, items_list, table):
         ts_section_list = bat_ts_for_sections
     elif table == "NIT":
         ts_section_list = nit_ts_for_sections
-    elif table == "SDT":
-        ts_section_list = sdt_svc_for_sections
+    elif table == "SDT Actual":
+        ts_section_list = sdt_act_for_sections
+    elif table == "SDT Other":
+        ts_section_list = sdt_oth_for_sections
     else:
         pass
 
@@ -267,7 +354,9 @@ def check_length(item_length, items_list, table):
                 check_length(bat_loops(i, services)[0], i, table)
             elif table == "NIT":
                 check_length(nit_loops(i, services)[0], i, table)
-            elif table == "SDT":
+            elif table == "SDT Actual":
+                check_length(sdt_loops(i)[0], i, table)
+            elif table == "SDT Other":
                 check_length(sdt_loops(i)[0], i, table)
 
     return ts_section_list
@@ -284,20 +373,21 @@ def check_eit_length(item_length, items_list, table):
 
     if table == "EIT_Schedule":
         ts_section_list = eit_sched_for_sections
-    if table == "EIT_Actual_PF":
+    elif table == "EIT_Actual_PF":
         ts_section_list = eit_act_pf_for_sections
-    if table == "EIT_Other_PF":
+    elif table == "EIT_Other_PF":
         ts_section_list = eit_oth_pf_for_sections
     else:
         pass
 
     section = event_chunks_list(items_list)
+
     for i in section:
         if table == "EIT_Schedule":
             ts_section_list.append(i)
-        if table == "EIT_Actual_PF":
+        elif table == "EIT_Actual_PF":
             ts_section_list.append(i)
-        if table == "EIT_Other_PF":
+        elif table == "EIT_Other_PF":
             ts_section_list.append(i)
         else:
             pass

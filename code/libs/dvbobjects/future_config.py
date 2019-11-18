@@ -32,8 +32,177 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
 
 services2 = [100,200,300,400,500,600,700,800,900,901,902,903,904,905,906,
             101,201,303,401,501,601,701,801,907,908,909,910,911,912,913]
-            
-transports = [1,2,3,4,5,6,7,8]
+
+services3 = [
+    {"ts": 1, 
+    "services": 
+        [
+            {"sid": 100, "type": 1, "lcn": 10}, 
+            {"sid": 101, "type": 1, "lcn": 20}, 
+            {"sid": 103, "type": 1, "lcn": 30},
+            {"sid": 104, "type": 1, "lcn": 40}, 
+            {"sid": 105, "type": 1, "lcn": 50}, 
+            {"sid": 106, "type": 1, "lcn": 60},
+            {"sid": 107, "type": 1, "lcn": 70}, 
+            {"sid": 108, "type": 1, "lcn": 80}, 
+            {"sid": 109, "type": 1, "lcn": 90},
+            {"sid": 110, "type": 1, "lcn": 100}, 
+            {"sid": 111, "type": 1, "lcn": 101}, 
+            {"sid": 112, "type": 1, "lcn": 102},
+            {"sid": 113, "type": 1, "lcn": 103}, 
+            {"sid": 114, "type": 1, "lcn": 104}, 
+            {"sid": 115, "type": 1, "lcn": 105},
+            {"sid": 116, "type": 1, "lcn": 106}, 
+            {"sid": 117, "type": 1, "lcn": 107}, 
+            {"sid": 118, "type": 1, "lcn": 108},
+            {"sid": 119, "type": 1, "lcn": 109}, 
+            {"sid": 120, "type": 1, "lcn": 110}, 
+            {"sid": 121, "type": 1, "lcn": 111},
+            {"sid": 122, "type": 1, "lcn": 112}, 
+            {"sid": 123, "type": 1, "lcn": 113}, 
+            {"sid": 124, "type": 1, "lcn": 114},
+            {"sid": 125, "type": 1, "lcn": 115}, 
+            {"sid": 126, "type": 1, "lcn": 116}, 
+            {"sid": 127, "type": 1, "lcn": 117},
+            {"sid": 128, "type": 1, "lcn": 118}, 
+            {"sid": 129, "type": 1, "lcn": 119}, 
+            {"sid": 130, "type": 1, "lcn": 120},
+            {"sid": 131, "type": 1, "lcn": 121}, 
+            {"sid": 132, "type": 1, "lcn": 122}, 
+            {"sid": 133, "type": 1, "lcn": 123},
+            {"sid": 134, "type": 1, "lcn": 124}, 
+            {"sid": 135, "type": 1, "lcn": 125}, 
+            {"sid": 136, "type": 1, "lcn": 126},
+            {"sid": 137, "type": 1, "lcn": 127}, 
+            {"sid": 138, "type": 1, "lcn": 128}, 
+            {"sid": 139, "type": 1, "lcn": 129},
+            {"sid": 140, "type": 1, "lcn": 130}, 
+            {"sid": 141, "type": 1, "lcn": 131}, 
+            {"sid": 142, "type": 1, "lcn": 132},
+
+        ]
+    },
+    {"ts": 2, 
+    "services": 
+        [
+            {"sid": 200, "type": 1, "lcn": 11}, 
+            {"sid": 201, "type": 1, "lcn": 21}, 
+            {"sid": 203, "type": 1, "lcn": 31},
+            {"sid": 204, "type": 1, "lcn": 41}, 
+            {"sid": 205, "type": 1, "lcn": 51}, 
+            {"sid": 206, "type": 1, "lcn": 61},
+            {"sid": 207, "type": 1, "lcn": 71}, 
+            {"sid": 208, "type": 1, "lcn": 81}, 
+            {"sid": 209, "type": 1, "lcn": 91},
+        ]
+    },
+    {"ts": 3, 
+    "services": 
+        [
+            {"sid": 300, "type": 1, "lcn": 12}, 
+            {"sid": 301, "type": 1, "lcn": 22}, 
+            {"sid": 303, "type": 1, "lcn": 32},
+            {"sid": 304, "type": 1, "lcn": 42}, 
+            {"sid": 305, "type": 1, "lcn": 52}, 
+            {"sid": 306, "type": 1, "lcn": 62},
+            {"sid": 307, "type": 1, "lcn": 72}, 
+            {"sid": 308, "type": 1, "lcn": 82}, 
+            {"sid": 309, "type": 1, "lcn": 92},
+        ]
+    },
+    {"ts": 4, 
+    "services": 
+        [
+            {"sid": 400, "type": 1, "lcn": 13}, 
+            {"sid": 401, "type": 1, "lcn": 23}, 
+            {"sid": 403, "type": 1, "lcn": 33},
+            {"sid": 404, "type": 1, "lcn": 43}, 
+            {"sid": 405, "type": 1, "lcn": 53}, 
+            {"sid": 406, "type": 1, "lcn": 63},
+            {"sid": 407, "type": 1, "lcn": 73}, 
+            {"sid": 408, "type": 1, "lcn": 83}, 
+            {"sid": 409, "type": 1, "lcn": 93},
+        ]
+    },
+    {"ts": 5, 
+    "services": 
+        [
+            {"sid": 500, "type": 1, "lcn": 14}, 
+            {"sid": 501, "type": 1, "lcn": 24}, 
+            {"sid": 503, "type": 1, "lcn": 34},
+            {"sid": 504, "type": 1, "lcn": 44}, 
+            {"sid": 505, "type": 1, "lcn": 54}, 
+            {"sid": 506, "type": 1, "lcn": 64},
+            {"sid": 507, "type": 1, "lcn": 74}, 
+            {"sid": 508, "type": 1, "lcn": 84}, 
+            {"sid": 509, "type": 1, "lcn": 94},
+        ]
+    },
+    {"ts": 6, 
+    "services": 
+        [
+            {"sid": 600, "type": 1, "lcn": 15}, 
+            {"sid": 601, "type": 1, "lcn": 25}, 
+            {"sid": 603, "type": 1, "lcn": 35},
+            {"sid": 604, "type": 1, "lcn": 45}, 
+            {"sid": 605, "type": 1, "lcn": 55}, 
+            {"sid": 606, "type": 1, "lcn": 65},
+            {"sid": 607, "type": 1, "lcn": 75}, 
+            {"sid": 608, "type": 1, "lcn": 85}, 
+            {"sid": 609, "type": 1, "lcn": 95},
+        ]
+    },
+    {"ts": 7, 
+    "services": 
+        [
+            {"sid": 700, "type": 1, "lcn": 16}, 
+            {"sid": 701, "type": 1, "lcn": 26}, 
+            {"sid": 703, "type": 1, "lcn": 36},
+            {"sid": 704, "type": 1, "lcn": 46}, 
+            {"sid": 705, "type": 1, "lcn": 56}, 
+            {"sid": 706, "type": 1, "lcn": 66},
+            {"sid": 707, "type": 1, "lcn": 76}, 
+            {"sid": 708, "type": 1, "lcn": 86}, 
+            {"sid": 709, "type": 1, "lcn": 96},
+        ]
+    },
+    {"ts": 8, 
+    "services": 
+        [
+            {"sid": 800, "type": 1, "lcn": 17}, 
+            {"sid": 801, "type": 1, "lcn": 27}, 
+            {"sid": 803, "type": 1, "lcn": 37},
+            {"sid": 804, "type": 1, "lcn": 47}, 
+            {"sid": 805, "type": 1, "lcn": 57}, 
+            {"sid": 806, "type": 1, "lcn": 67},
+            {"sid": 807, "type": 1, "lcn": 77}, 
+            {"sid": 808, "type": 1, "lcn": 87}, 
+            {"sid": 809, "type": 1, "lcn": 97},
+        ]
+    },
+    {"ts": 9, 
+    "services": 
+        [
+            {"sid": 900, "type": 1, "lcn": 18}, 
+            {"sid": 901, "type": 1, "lcn": 28}, 
+            {"sid": 903, "type": 1, "lcn": 38},
+            {"sid": 904, "type": 1, "lcn": 48}, 
+            {"sid": 905, "type": 1, "lcn": 58}, 
+            {"sid": 906, "type": 1, "lcn": 68},
+            {"sid": 907, "type": 1, "lcn": 78}, 
+            {"sid": 908, "type": 1, "lcn": 88}, 
+            {"sid": 909, "type": 1, "lcn": 98},
+        ]
+    },
+]
+
+# fmt = "!H"
+
+# result = pack(fmt, services3[0]["sid"])
+# print ("!!!!!!!!!!!!!")
+# print (len(result))
+
+transports = [1,2,3,4,5,6,7,8,9,10]
 
 events = [
             {"event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
@@ -85,7 +254,7 @@ events2 = [
 nit_sections = []
 
 # Get list of ts_lists
-sections_ts = check_length(nit_loops(transports, services)[0], transports, "NIT")
+sections_ts = check_length(nit_loops(services3, services)[0], services3, "NIT")
 
 # Generate NIT sections
 if len(sections_ts) != 0:
@@ -119,10 +288,12 @@ else:
 bat_sections = []
 
 # Get list of ts_lists
-sections_ts = check_length(bat_loops(transports, services)[0], transports, "BAT")
+sections_ts = check_length(bat_loops(services3, services)[0], services3, "BAT")
 
 # Generate BAT sections
 if len(sections_ts) != 0:
+
+    print ("LENGTH OF SECTION LIST ====" + str(len(sections_ts)))
 
     for idx, i in enumerate(sections_ts):
 
@@ -146,14 +317,14 @@ else:
     pass
 
 
-#####################################################
-# Service Description Table (ETSI EN 300 468 5.2.3) #
-#####################################################
+#############################################################
+# Service Description Actual Table  (ETSI EN 300 468 5.2.3) #
+#############################################################
 
 sdt_sections = []
 
 # Get list of svc_lists
-sections_ts = check_length(sdt_loops(services)[0], services, "SDT")
+sections_ts = check_length(sdt_loops(services)[0], services, "SDT Actual")
 
 # Generate SDT sections
 if len(sections_ts) != 0:
@@ -172,8 +343,42 @@ if len(sections_ts) != 0:
         sdt_sections.append(sdt)
 
     # Write sections to bat.sec file
-    with open("./sdt.sec", "wb") as DFILE:
+    with open("./sdt_act.sec", "wb") as DFILE:
         for sec in sdt_sections: 
+            print (sec)
+            DFILE.write(sec.pack())
+else:
+    pass
+
+
+#############################################################
+# Service Description Other Table  (ETSI EN 300 468 5.2.3) #
+#############################################################
+
+sdt_oth_sections = []
+
+# Get list of svc_lists
+sections_ts = check_length(sdt_loops(services)[0], services, "SDT Other")
+
+# Generate SDT sections
+if len(sections_ts) != 0:
+
+    for idx, i in enumerate(sections_ts):
+
+        sdt = service_description_other_ts_section(
+            transport_stream_id = 1,
+            original_network_id = 41007,
+            service_loop = sdt_loops(i)[1], #Get loop items
+            version_number = 1,
+            section_number = idx,
+            last_section_number = len(sections_ts) - 1,
+        )
+
+        sdt_oth_sections.append(sdt)
+
+    # Write sections to bat.sec file
+    with open("./sdt_oth.sec", "wb") as DFILE:
+        for sec in sdt_oth_sections: 
             print (sec)
             DFILE.write(sec.pack())
 else:
@@ -221,178 +426,178 @@ else:
     pass
 
 
-########################################################
-# EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
-########################################################
+# ########################################################
+# # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
+# ########################################################
 
-eit_actual_pf_sections = []
+# eit_actual_pf_sections = []
 
-sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Actual_PF")
+# sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Actual_PF")
 
-if len(sections_ts) != 0:
+# if len(sections_ts) != 0:
 
-    for idx, i in enumerate(sections_ts):
+#     for idx, i in enumerate(sections_ts):
 
-        for jdx, j in enumerate(i):
+#         for jdx, j in enumerate(i):
 
-            eit_actual_pf = event_information_section(
-                table_id = EIT_ACTUAL_TS_PRESENT_FOLLOWING,
-                service_id = i[0]["sid"],
-                transport_stream_id = 1,
-                original_network_id = 41007,
-                event_loop = eit_loops([j])[1], #Get loop items
-                segment_last_section_number = 1,
-                version_number = 1, 
-                section_number = jdx,
-                last_section_number = len(i) - 1, 
-            )
+#             eit_actual_pf = event_information_section(
+#                 table_id = EIT_ACTUAL_TS_PRESENT_FOLLOWING,
+#                 service_id = i[0]["sid"],
+#                 transport_stream_id = 1,
+#                 original_network_id = 41007,
+#                 event_loop = eit_loops([j])[1], #Get loop items
+#                 segment_last_section_number = 1,
+#                 version_number = 1, 
+#                 section_number = jdx,
+#                 last_section_number = len(i) - 1, 
+#             )
 
-            eit_actual_pf_sections.append(eit_actual_pf)
+#             eit_actual_pf_sections.append(eit_actual_pf)
 
-    # Write sections to eit_act_pf.sec file
-    with open("./eit_act_pf.sec", "wb") as DFILE:
-        for sec in eit_actual_pf_sections: 
-            print (sec)
-            DFILE.write(sec.pack())
-else:
-    pass
-
-
-#######################################################
-# EIT Other Present/Following (ETSI EN 300 468 5.2.4) #
-#######################################################
-
-eit_other_pf_sections = []
-
-sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Other_PF")
-
-for idx, i in enumerate(sections_ts):
-
-    for jdx, j in enumerate(i):
-
-        eit_other_pf = event_information_section(
-            table_id = EIT_ANOTHER_TS_PRESENT_FOLLOWING,
-            service_id = i[0]["sid"],
-            transport_stream_id = 1,
-            original_network_id = 41007,
-            event_loop = eit_loops([j])[1], #Get loop items
-            segment_last_section_number = 1,
-            version_number = 1, 
-            section_number = jdx,
-            last_section_number = len(i) - 1, 
-        )
-
-        eit_other_pf_sections.append(eit_other_pf)
-
-# Write sections to eit_oth_pf.sec file
-with open("./eit_oth_pf.sec", "wb") as DFILE:
-    for sec in eit_other_pf_sections: 
-        print (sec)
-        DFILE.write(sec.pack())
+#     # Write sections to eit_act_pf.sec file
+#     with open("./eit_act_pf.sec", "wb") as DFILE:
+#         for sec in eit_actual_pf_sections: 
+#             print (sec)
+#             DFILE.write(sec.pack())
+# else:
+#     pass
 
 
-##############################################################################################
-#################### Prepare time configuration for TOT and TOT tables #######################
-##############################################################################################
+# #######################################################
+# # EIT Other Present/Following (ETSI EN 300 468 5.2.4) #
+# #######################################################
 
-current_time = time.gmtime()
-current_local_time = time.localtime()
+# eit_other_pf_sections = []
 
-# italian rules
-current_offset_polarity = 0x0 # positive
-if current_local_time.tm_isdst == 1:
-    start = 'DTSTART:%(year)04d%(month)02d%(day)02dT%(hour)02d%(minute)02d%(second)02d\n' % { 
-        "year": current_time[0], 
-        "month": current_time[1], 
-        "day": current_time[1], 
-        "hour" : 3, 
-        "minute": 0, 
-        "second": 0
-    }
-    start += 'RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10;COUNT=1' # last sunday of october
-    current_offset = 0x02
-    new_offset = 0x01
-else :
-    start = 'DTSTART:%(year)04d%(month)02d%(day)02dT%(hour)02d%(minute)02d%(second)02d\n' % { 
-        "year": current_time[0], 
-        "month": current_time[1], 
-        "day": current_time[1], 
-        "hour" : 2, 
-        "minute": 0, 
-        "second": 0
-    }
-    start += 'RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3;COUNT=1' # last sunday of march
-    current_offset = 0x01
-    new_offset = 0x02
+# sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Other_PF")
 
-change_time = list(rrulestr(start))[0]
+# for idx, i in enumerate(sections_ts):
 
-###############################################################################################
-###############################################################################################
-###############################################################################################
+#     for jdx, j in enumerate(i):
+
+#         eit_other_pf = event_information_section(
+#             table_id = EIT_ANOTHER_TS_PRESENT_FOLLOWING,
+#             service_id = i[0]["sid"],
+#             transport_stream_id = 1,
+#             original_network_id = 41007,
+#             event_loop = eit_loops([j])[1], #Get loop items
+#             segment_last_section_number = 1,
+#             version_number = 1, 
+#             section_number = jdx,
+#             last_section_number = len(i) - 1, 
+#         )
+
+#         eit_other_pf_sections.append(eit_other_pf)
+
+# # Write sections to eit_oth_pf.sec file
+# with open("./eit_oth_pf.sec", "wb") as DFILE:
+#     for sec in eit_other_pf_sections: 
+#         print (sec)
+#         DFILE.write(sec.pack())
 
 
-#####################################################
-#     Time Offset Table (ETSI EN 300 468 5.2.5)     #
-#####################################################
+# ##############################################################################################
+# #################### Prepare time configuration for TOT and TOT tables #######################
+# ##############################################################################################
 
-tot = time_offset_section(
-    descriptor_loop = [
-        local_time_offset_descriptor(
-            local_time_offset_loop = [
-                local_time_offset_loop_item(
-                    ISO_639_language_code = b'kaz',
-                    country_region_id = 1,
-                    local_time_offset_polarity = 0,
-                    local_time_offset_hour = 6,
-                    local_time_offset_minute = 0,
-                    year_of_change = change_time.year-1900, 
-                    month_of_change = change_time.month,
-                    day_of_change = change_time.day,
-                    hour_of_change = int(str(((change_time.hour / 10) * 16) + (change_time.hour % 10)).split('.')[0]),
-                    minute_of_change = int(str(((change_time.minute / 10) * 16) + (change_time.minute % 10)).split('.')[0]),
-                    second_of_change = int(str(((change_time.second / 10) * 16) + (change_time.second % 10)).split('.')[0]),
-                    next_time_offset_hour = new_offset,
-                    next_time_offset_minute = 0x00
-                )
-            ]
-        )
-    ],
-    year = current_time[0]-1900, # since 1900. If now 2019, then 2019 - 1900 = 119
-    month = current_time[1],
-    day = current_time[2],
-    hour = int(str(((current_time[3] / 10) * 16) + (current_time[3] % 10)).split('.')[0]),
-    minute = int(str(((current_time[4] / 10) * 16) + (current_time[4] % 10)).split('.')[0]),
-    second = int(str(((current_time[5] / 10) * 16) + (current_time[5] % 10)).split('.')[0]),
-    version_number = 1,
-    section_number = 0,
-    last_section_number = 0
-    )
+# current_time = time.gmtime()
+# current_local_time = time.localtime()
 
-# Write sections to tot.sec file
-with open("./tot.sec", "wb") as DFILE:
-    DFILE.write(tot.pack())
+# # italian rules
+# current_offset_polarity = 0x0 # positive
+# if current_local_time.tm_isdst == 1:
+#     start = 'DTSTART:%(year)04d%(month)02d%(day)02dT%(hour)02d%(minute)02d%(second)02d\n' % { 
+#         "year": current_time[0], 
+#         "month": current_time[1], 
+#         "day": current_time[1], 
+#         "hour" : 3, 
+#         "minute": 0, 
+#         "second": 0
+#     }
+#     start += 'RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=10;COUNT=1' # last sunday of october
+#     current_offset = 0x02
+#     new_offset = 0x01
+# else :
+#     start = 'DTSTART:%(year)04d%(month)02d%(day)02dT%(hour)02d%(minute)02d%(second)02d\n' % { 
+#         "year": current_time[0], 
+#         "month": current_time[1], 
+#         "day": current_time[1], 
+#         "hour" : 2, 
+#         "minute": 0, 
+#         "second": 0
+#     }
+#     start += 'RRULE:FREQ=YEARLY;BYDAY=-1SU;BYMONTH=3;COUNT=1' # last sunday of march
+#     current_offset = 0x01
+#     new_offset = 0x02
+
+# change_time = list(rrulestr(start))[0]
+
+# ###############################################################################################
+# ###############################################################################################
+# ###############################################################################################
 
 
-####################################################
-#  Time Description Table (ETSI EN 300 468 5.2.5)  #
-####################################################
+# #####################################################
+# #     Time Offset Table (ETSI EN 300 468 5.2.5)     #
+# #####################################################
 
-# TDT should be replaced at regeneration run time
+# tot = time_offset_section(
+#     descriptor_loop = [
+#         local_time_offset_descriptor(
+#             local_time_offset_loop = [
+#                 local_time_offset_loop_item(
+#                     ISO_639_language_code = b'kaz',
+#                     country_region_id = 1,
+#                     local_time_offset_polarity = 0,
+#                     local_time_offset_hour = 6,
+#                     local_time_offset_minute = 0,
+#                     year_of_change = change_time.year-1900, 
+#                     month_of_change = change_time.month,
+#                     day_of_change = change_time.day,
+#                     hour_of_change = int(str(((change_time.hour / 10) * 16) + (change_time.hour % 10)).split('.')[0]),
+#                     minute_of_change = int(str(((change_time.minute / 10) * 16) + (change_time.minute % 10)).split('.')[0]),
+#                     second_of_change = int(str(((change_time.second / 10) * 16) + (change_time.second % 10)).split('.')[0]),
+#                     next_time_offset_hour = new_offset,
+#                     next_time_offset_minute = 0x00
+#                 )
+#             ]
+#         )
+#     ],
+#     year = current_time[0]-1900, # since 1900. If now 2019, then 2019 - 1900 = 119
+#     month = current_time[1],
+#     day = current_time[2],
+#     hour = int(str(((current_time[3] / 10) * 16) + (current_time[3] % 10)).split('.')[0]),
+#     minute = int(str(((current_time[4] / 10) * 16) + (current_time[4] % 10)).split('.')[0]),
+#     second = int(str(((current_time[5] / 10) * 16) + (current_time[5] % 10)).split('.')[0]),
+#     version_number = 1,
+#     section_number = 0,
+#     last_section_number = 0
+#     )
+
+# # Write sections to tot.sec file
+# with open("./tot.sec", "wb") as DFILE:
+#     DFILE.write(tot.pack())
+
+
+# ####################################################
+# #  Time Description Table (ETSI EN 300 468 5.2.5)  #
+# ####################################################
+
+# # TDT should be replaced at regeneration run time
     
-tdt = time_date_section(
-    year = current_time[0]-1900, # since 1900. If now 2019, then 2019 - 1900 = 119
-    month = current_time[1],
-    day = current_time[2],
-    hour = int(str(((current_time[3] / 10) * 16) + (current_time[3] % 10)).split('.')[0]),
-    minute = int(str(((current_time[4] / 10) * 16) + (current_time[4] % 10)).split('.')[0]),
-    second = int(str(((current_time[5] / 10) * 16) + (current_time[5] % 10)).split('.')[0]),
-    version_number = 1,
-    section_number = 0,
-    last_section_number = 0,
-    )
+# tdt = time_date_section(
+#     year = current_time[0]-1900, # since 1900. If now 2019, then 2019 - 1900 = 119
+#     month = current_time[1],
+#     day = current_time[2],
+#     hour = int(str(((current_time[3] / 10) * 16) + (current_time[3] % 10)).split('.')[0]),
+#     minute = int(str(((current_time[4] / 10) * 16) + (current_time[4] % 10)).split('.')[0]),
+#     second = int(str(((current_time[5] / 10) * 16) + (current_time[5] % 10)).split('.')[0]),
+#     version_number = 1,
+#     section_number = 0,
+#     last_section_number = 0,
+#     )
 
-# Write sections to tdt.sec file
-with open("./tdt.sec", "wb") as DFILE:
-    DFILE.write(tdt.pack())
+# # Write sections to tdt.sec file
+# with open("./tdt.sec", "wb") as DFILE:
+#     DFILE.write(tdt.pack())
 

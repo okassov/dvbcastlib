@@ -1325,3 +1325,75 @@ class epg_information_descriptor(Descriptor):
         fmt = "!%ds" % len(epg_information_bytes)
 
         return pack(fmt, epg_information_bytes)
+
+############################################################################
+
+class e2_descriptor_loop_item(DVBobject):
+
+    def pack(self):
+
+        fmt = "!HH"
+
+        return pack(fmt, self.service_ID, self.logical_channel_number)
+
+class e2_descriptor(Descriptor):
+
+    descriptor_tag = 0xE2
+
+    def bytes(self):
+
+        e2_bytes = b"".join(
+            map(lambda x: x.pack(),    
+            self.e2_descriptor_loop))                                    
+
+        fmt = "!%ds" % len(e2_bytes)
+
+        return pack(fmt, e2_bytes)
+
+############################################################################
+
+class e4_descriptor_loop_item(DVBobject):
+
+    def pack(self):
+
+        fmt = "!HHH"
+
+        return pack(fmt, self.service_ID, self.general_order, self.order_by_type)
+
+class e4_descriptor(Descriptor):
+
+    descriptor_tag = 0xE4
+
+    def bytes(self):
+
+        e4_bytes = b"".join(
+            map(lambda x: x.pack(),    
+            self.e4_descriptor_loop))                                    
+
+        fmt = "!%ds" % len(e4_bytes)
+
+        return pack(fmt, e4_bytes)
+
+######################################################################################
+
+class ca_identifier_descriptor_loop_item(DVBobject):
+
+    def pack(self):
+
+        fmt = "!H"
+
+        return pack(fmt, self.ca_system_id)
+
+class ca_identifier_descriptor(Descriptor):                                                                                                                                           
+
+    descriptor_tag = 0x53
+    
+    def bytes(self):
+
+        ca_identifier_bytes = b"".join(
+            map(lambda x: x.pack(),    
+            self.ca_identifier_descriptor_loop))                                    
+
+        fmt = "!%ds" % len(ca_identifier_bytes)
+
+        return pack(fmt, ca_identifier_bytes)
