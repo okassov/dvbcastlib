@@ -82,7 +82,7 @@ def sec_len(first_loop, second_loop = []):
         return len(fl_bytes)
 
 
-def bat_loops(transports_list, services_list):
+def bat_loops(transports_list):
     '''Function get 2 list args with transports and services,
     and return length of loops.
     Args:
@@ -133,7 +133,7 @@ def bat_loops(transports_list, services_list):
     return sec_len(bdl, tdl), bdl, tdl
 
 
-def nit_loops(transports_list, services_list):
+def nit_loops(transports_list):
     '''Function get 2 list args with transports and services,
     and return length of loops'''
 
@@ -295,9 +295,9 @@ def check_length(item_length, items_list, table):
         section = split_list(items_list)
         for i in section:
             if table == "BAT":
-                check_length(bat_loops(i, services)[0], i, table)
+                check_length(bat_loops(i)[0], i, table)
             elif table == "NIT":
-                check_length(nit_loops(i, services)[0], i, table)
+                check_length(nit_loops(i)[0], i, table)
             elif table == "SDT Actual":
                 check_length(sdt_loops(i)[0], i, table)
             elif table == "SDT Other":
@@ -337,4 +337,14 @@ def check_eit_length(item_length, items_list, table):
             pass
 
     return ts_section_list
+
+def null_list(dvb_table):
+    '''This function clear global section lists
+    for next loop'''
+    if dvb_table == "BAT": 
+        bat_ts_for_sections.clear()
+    elif dvb_table == "NIT": 
+        nit_ts_for_sections.clear()
+    else:
+        pass
 

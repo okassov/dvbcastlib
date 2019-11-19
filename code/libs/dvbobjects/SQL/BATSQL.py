@@ -17,7 +17,6 @@ def connect():
     except:
         print ("Error")
 
-bat_to_transports = []
 
 def get_bat_ts(conn, bat_id):
     '''This function return DISTINCT (NOT DUPLICATE) transport id's
@@ -25,7 +24,8 @@ def get_bat_ts(conn, bat_id):
 
     cur = conn.cursor()
     try:
-        cur.execute("SELECT DISTINCT transport_id FROM bat_to_transports WHERE bat_id=%s" % bat_id)
+        cur.execute("SELECT DISTINCT transport_id FROM \
+            bat_to_transports WHERE bat_id=%s" % bat_id)
         bat_transports = cur.fetchall()
         return bat_transports
     except psycopg2.Error as e:
@@ -41,7 +41,8 @@ def get_bat_svc(conn, svc_id):
     cur = conn.cursor()
 
     try:
-        cur.execute("SELECT service_id, service_type FROM services WHERE id=%s" % svc_id)
+        cur.execute("SELECT service_id, service_type FROM \
+            services WHERE id=%s" % svc_id)
         svc = cur.fetchone()
         return svc
     except psycopg2.Error as e:
@@ -50,44 +51,55 @@ def get_bat_svc(conn, svc_id):
         cur.close()
 
 
-def bat_ts_list(conn, ts_list, bat_id):
+def bat_ts_list(conn, ts_list, bat_id, result_list):
     '''This function generate and return list
-    for BAT Generation. Get transports list as ARG'''
+    for BAT Generation. Get transports list and 
+    bat_id as ARG'''
 
     for ts in ts_list:
 
         cur = conn.cursor()
 
-        cur.execute("SELECT service_id FROM bat_to_transports WHERE transport_id=%s and bat_id=%s" % (ts[0], bat_id))
+        try:
+            cur.execute("SELECT service_id FROM bat_to_transports \
+                WHERE transport_id=%s and bat_id=%s" % (ts[0], bat_id))
 
-        bat_to_transports.append({"ts": ts[0], "services": []})
+            result_list.append({"ts": ts[0], "services": []})
 
-        while True:
-            next_row = cur.fetchone()
-            if next_row:
-                service_data = get_bat_svc(conn, next_row[0])
-                for i in bat_to_transports:
-                    if i["ts"] == ts[0]:
-                        i["services"].append(
-                            {
-                                "sid": service_data[0], 
-                                "type": service_data[1], 
-                                "lcn": service_data[1]
-                            }
-                        )
-                    else:
-                        pass
-            else:
-                break
-        cur.close()
+            while True:
+                next_row = cur.fetchone()
+                if next_row:
+                    service_data = get_bat_svc(conn, next_row[0])
+                    for i in result_list:
+                        if i["ts"] == ts[0]:
+                            i["services"].append(
+                                {
+                                    "sid": service_data[0], 
+                                    "type": service_data[1], 
+                                    "lcn": service_data[1]
+                                }
+                            )
+                        else:
+                            pass
+                else:
+                    break
+        except psycopg2.Error as e:
+            print (e)
+        finally:
+            cur.close()
+
+    return result_list
 
 
 def bat_sql_main(bat_id):
+    '''BAT SQL Main function'''
+
+    bat_to_transports = []
 
     conn = connect()
+
+    result = bat_ts_list(conn, get_bat_ts(conn, bat_id), bat_id, bat_to_transports)
     
-    bat_ts_list(conn, get_bat_ts(conn, bat_id), bat_id)
+    conn.close()
 
-    print (bat_to_transports)
-
-    return bat_to_transports
+    return result
