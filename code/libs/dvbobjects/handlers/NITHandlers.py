@@ -23,9 +23,12 @@ def network_name_descriptor_func(items):
     Input dict format ===>
     {
         "descriptor_name: 
-            {"descirptor_value1": descriptor_data1 }
-            {"descirptor_value2": descriptor_data2 }
-            {"descirptor_value3": descriptor_data3 }
+            {
+            "descirptor_value1": descriptor_data1,
+            "descirptor_value2": descriptor_data2,
+            "descirptor_value3": descriptor_data3,
+            ...
+            }
     }
     Return out of network_name_descriptor
     '''
@@ -46,9 +49,12 @@ def multilingual_network_descriptor_func(items):
     Input dict format ===>
     {
         "descriptor_name: 
-            {"descirptor_value1": descriptor_data1 }
-            {"descirptor_value2": descriptor_data2 }
-            {"descirptor_value3": descriptor_data3 }
+            {
+            "descirptor_value1": descriptor_data1,
+            "descirptor_value2": descriptor_data2,
+            "descirptor_value3": descriptor_data3,
+            ...
+            }
     }
     Return out of multilingual_network_descriptor
     '''
@@ -84,9 +90,12 @@ def private_data_specifier_descriptor_func(items):
     Input dict format ===>
     {
         "descriptor_name: 
-            {"descirptor_value1": descriptor_data1 }
-            {"descirptor_value2": descriptor_data2 }
-            {"descirptor_value3": descriptor_data3 }
+            {
+            "descirptor_value1": descriptor_data1,
+            "descirptor_value2": descriptor_data2,
+            "descirptor_value3": descriptor_data3,
+            ...
+            }
     }
     Return out of private_data_specifier_descriptor
     '''
@@ -109,6 +118,35 @@ def private_data_specifier_descriptor_func(items):
 ############################################################
 
 def service_list_descriptor_func(items):
+    '''This function get dict as arg.
+    Input dict format ===>
+    {
+        "ts": id,
+        "descriptors:
+            [ 
+                {
+                    "descriptor1_name": 
+                        {
+                        "descirptor1_value1": descriptor_data1,
+                        "descirptor1_value2": descriptor_data2,
+                        "descirptor1_value3": descriptor_data3,
+                        ...
+                        },
+                },
+                {
+                    "descriptor2_name": 
+                        {
+                        "descirptor2_value1": descriptor_data1,
+                        "descirptor2_value2": descriptor_data2,
+                        "descirptor2_value3": descriptor_data3,
+                        ...
+                        },
+                },
+                ...  
+            ]
+    }
+    Return out of service_list_descriptor
+    '''
 
     dvb_service_descriptor_loop = []
 
@@ -136,6 +174,35 @@ def service_list_descriptor_func(items):
 
 
 def satellite_delivery_system_descriptor_func(items):
+    '''This function get dict as arg.
+    Input dict format ===>
+    {
+        "ts": id,
+        "descriptors:
+            [ 
+                {
+                    "descriptor1_name": 
+                        {
+                        "descirptor1_value1": descriptor_data1,
+                        "descirptor1_value2": descriptor_data2,
+                        "descirptor1_value3": descriptor_data3,
+                        ...
+                        },
+                },
+                {
+                    "descriptor2_name": 
+                        {
+                        "descirptor2_value1": descriptor_data1,
+                        "descirptor2_value2": descriptor_data2,
+                        "descirptor2_value3": descriptor_data3,
+                        ...
+                        },
+                },
+                ...  
+            ]
+    }
+    Return out of service_list_descriptor
+    '''
 
     for item in items["descriptors"]:
 
