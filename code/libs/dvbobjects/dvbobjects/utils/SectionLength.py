@@ -7,6 +7,8 @@ from dvbobjects.PSI.BAT import *
 from dvbobjects.PSI.EIT import *
 from dvbobjects.DVB.Descriptors import *
 from dvbobjects.MPEG.Descriptors import *
+from SQL.NITSQLDescriptors import *
+from handlers.NITHandlers import *
 
 bat_ts_for_sections = []
 nit_ts_for_sections = []
@@ -26,9 +28,6 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
             [170, 1], [270, 1], [370, 1], [470, 1], [570, 1], [670, 1], [770, 1], [870, 1], [970, 1],
             [180, 1], [280, 1], [380, 1], [480, 1], [580, 1], [680, 1], [780, 1], [880, 1], [980, 1],
             [190, 1], [290, 1], [390, 1], [490, 1]]
-
-services2 = [100,200,300,400,500,600,700,800,900,901,902,903,904,905,906,
-            101,201,303,401,501,601,701,801,907,908,909,910,911,912,913,]
 
 
 def split_list(alist, parts=2):
@@ -133,52 +132,47 @@ def bat_loops(transports_list):
     return sec_len(bdl, tdl), bdl, tdl
 
 
-def nit_loops(transports_list):
+def nit_loops(transports_list, *args, **kwargs):
     '''Function get 2 list args with transports and services,
     and return length of loops'''
 
-    ndl = network_descriptor_loop = [
-        network_descriptor(network_name = b"Marat Network",),
-        multilingual_network_descriptor(
-            multilingual_network_descriptor_loop = [
-                multilingual_network_descriptor_loop_item(
-                    ISO_639_language_code = b"rus",
-                    network_name = b"Kazteleradio"
-                )
-            ]
-        ),
-        private_data_specifier_descriptor(private_data_specifier = 24577),
-        ]
+    network_descriptor_loop = []
+    transport_stream_loop = []
 
-    tdl = transport_stream_loop = [
-        transport_stream_loop_item(
-            transport_stream_id = i["ts"],
-            original_network_id = 41007,
-            transport_descriptor_loop = [
-                service_list_descriptor(
-                    dvb_service_descriptor_loop = [
-                        service_descriptor_loop_item(
-                             service_ID = svc["sid"], 
-                             service_type = svc["type"],
-                        ) for svc in i["services"]
-                    ]
-                ),
-                transport_stream_sat_descriptor(
-                    frequency = 1211141313,
-                    orbital_position = 5850,
-                    west_east_flag = 1,
-                    polarization = 3,
-                    roll_off = 0,
-                    modulation_system = 1,
-                    modulation_type = 1,
-                    symbol_rate = 30,
-                    FEC_inner = 3
-                )
-            ]        
-        ) for i in transports_list
-    ]
+    first_loop_descriptors = kwargs["descriptors"][0]
+    second_loop_descriptors = kwargs["descriptors"][1]
+    network_id = kwargs["network_id"]
 
-    return sec_len(ndl, tdl), ndl, tdl
+    for descriptor in second_loop_descriptors:
+        transport_stream_loop.append(
+            transport_stream_loop_item(
+                transport_stream_id = descriptor["ts"],
+                original_network_id = network_id,
+                transport_descriptor_loop = [
+                    service_list_descriptor_func(descriptor),
+                    satellite_delivery_system_descriptor_func(descriptor)
+                ]
+            )
+        )
+
+    for descriptor in first_loop_descriptors:
+
+        if network_name_descriptor_func(descriptor) != None:
+            network_descriptor_loop.append(
+                network_name_descriptor_func(descriptor)
+            )
+        elif multilingual_network_descriptor_func(descriptor) != None:
+            network_descriptor_loop.append(
+                multilingual_network_descriptor_func(descriptor)
+            )
+        elif private_data_specifier_descriptor_func(descriptor) != None:
+            network_descriptor_loop.append(
+                private_data_specifier_descriptor_func(descriptor)
+            )
+        else:
+            pass
+
+    return sec_len(network_descriptor_loop, transport_stream_loop), network_descriptor_loop, transport_stream_loop
 
 
 def sdt_loops(services):
@@ -269,7 +263,7 @@ def eit_loops(events_list):
     return sec_len(el), el
 
 
-def check_length(item_length, items_list, table):
+def check_length(item_length, items_list, table, *args, **kwargs):
     '''This function check length of second loop for all
     transports in this loop. If length of loop > 1024 - 3,
     then it's divides trasnport list to multiple list like 1/2
@@ -297,7 +291,12 @@ def check_length(item_length, items_list, table):
             if table == "BAT":
                 check_length(bat_loops(i)[0], i, table)
             elif table == "NIT":
-                check_length(nit_loops(i)[0], i, table)
+                check_length(
+                    nit_loops(i)[0], 
+                    i, 
+                    table, 
+                    network_id = kwargs["network_id"],
+                    descriptors = kwargs["descriptors"])
             elif table == "SDT Actual":
                 check_length(sdt_loops(i)[0], i, table)
             elif table == "SDT Other":

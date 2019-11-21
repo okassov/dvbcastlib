@@ -32,177 +32,6 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
             [180, 1], [280, 1], [380, 1], [480, 1], [580, 1], [680, 1], [780, 1], [880, 1], [980, 1],
             [190, 1], [290, 1], [390, 1], [490, 1]]
 
-services2 = [100,200,300,400,500,600,700,800,900,901,902,903,904,905,906,
-            101,201,303,401,501,601,701,801,907,908,909,910,911,912,913]
-
-services3 = [
-    {"ts": 1, 
-    "services": 
-        [
-            {"sid": 100, "type": 1, "lcn": 10}, 
-            {"sid": 101, "type": 1, "lcn": 20}, 
-            {"sid": 103, "type": 1, "lcn": 30},
-            {"sid": 104, "type": 1, "lcn": 40}, 
-            {"sid": 105, "type": 1, "lcn": 50}, 
-            {"sid": 106, "type": 1, "lcn": 60},
-            {"sid": 107, "type": 1, "lcn": 70}, 
-            {"sid": 108, "type": 1, "lcn": 80}, 
-            {"sid": 109, "type": 1, "lcn": 90},
-            {"sid": 110, "type": 1, "lcn": 100}, 
-            {"sid": 111, "type": 1, "lcn": 101}, 
-            {"sid": 112, "type": 1, "lcn": 102},
-            {"sid": 113, "type": 1, "lcn": 103}, 
-            {"sid": 114, "type": 1, "lcn": 104}, 
-            {"sid": 115, "type": 1, "lcn": 105},
-            {"sid": 116, "type": 1, "lcn": 106}, 
-            {"sid": 117, "type": 1, "lcn": 107}, 
-            {"sid": 118, "type": 1, "lcn": 108},
-            {"sid": 119, "type": 1, "lcn": 109}, 
-            {"sid": 120, "type": 1, "lcn": 110}, 
-            {"sid": 121, "type": 1, "lcn": 111},
-            {"sid": 122, "type": 1, "lcn": 112}, 
-            {"sid": 123, "type": 1, "lcn": 113}, 
-            {"sid": 124, "type": 1, "lcn": 114},
-            {"sid": 125, "type": 1, "lcn": 115}, 
-            {"sid": 126, "type": 1, "lcn": 116}, 
-            {"sid": 127, "type": 1, "lcn": 117},
-            {"sid": 128, "type": 1, "lcn": 118}, 
-            {"sid": 129, "type": 1, "lcn": 119}, 
-            {"sid": 130, "type": 1, "lcn": 120},
-            {"sid": 131, "type": 1, "lcn": 121}, 
-            {"sid": 132, "type": 1, "lcn": 122}, 
-            {"sid": 133, "type": 1, "lcn": 123},
-            {"sid": 134, "type": 1, "lcn": 124}, 
-            {"sid": 135, "type": 1, "lcn": 125}, 
-            {"sid": 136, "type": 1, "lcn": 126},
-            {"sid": 137, "type": 1, "lcn": 127}, 
-            {"sid": 138, "type": 1, "lcn": 128}, 
-            {"sid": 139, "type": 1, "lcn": 129},
-            {"sid": 140, "type": 1, "lcn": 130}, 
-            {"sid": 141, "type": 1, "lcn": 131}, 
-            {"sid": 142, "type": 1, "lcn": 132},
-
-        ]
-    },
-    {"ts": 2, 
-    "services": 
-        [
-            {"sid": 200, "type": 1, "lcn": 11}, 
-            {"sid": 201, "type": 1, "lcn": 21}, 
-            {"sid": 203, "type": 1, "lcn": 31},
-            {"sid": 204, "type": 1, "lcn": 41}, 
-            {"sid": 205, "type": 1, "lcn": 51}, 
-            {"sid": 206, "type": 1, "lcn": 61},
-            {"sid": 207, "type": 1, "lcn": 71}, 
-            {"sid": 208, "type": 1, "lcn": 81}, 
-            {"sid": 209, "type": 1, "lcn": 91},
-        ]
-    },
-    {"ts": 3, 
-    "services": 
-        [
-            {"sid": 300, "type": 1, "lcn": 12}, 
-            {"sid": 301, "type": 1, "lcn": 22}, 
-            {"sid": 303, "type": 1, "lcn": 32},
-            {"sid": 304, "type": 1, "lcn": 42}, 
-            {"sid": 305, "type": 1, "lcn": 52}, 
-            {"sid": 306, "type": 1, "lcn": 62},
-            {"sid": 307, "type": 1, "lcn": 72}, 
-            {"sid": 308, "type": 1, "lcn": 82}, 
-            {"sid": 309, "type": 1, "lcn": 92},
-        ]
-    },
-    {"ts": 4, 
-    "services": 
-        [
-            {"sid": 400, "type": 1, "lcn": 13}, 
-            {"sid": 401, "type": 1, "lcn": 23}, 
-            {"sid": 403, "type": 1, "lcn": 33},
-            {"sid": 404, "type": 1, "lcn": 43}, 
-            {"sid": 405, "type": 1, "lcn": 53}, 
-            {"sid": 406, "type": 1, "lcn": 63},
-            {"sid": 407, "type": 1, "lcn": 73}, 
-            {"sid": 408, "type": 1, "lcn": 83}, 
-            {"sid": 409, "type": 1, "lcn": 93},
-        ]
-    },
-    {"ts": 5, 
-    "services": 
-        [
-            {"sid": 500, "type": 1, "lcn": 14}, 
-            {"sid": 501, "type": 1, "lcn": 24}, 
-            {"sid": 503, "type": 1, "lcn": 34},
-            {"sid": 504, "type": 1, "lcn": 44}, 
-            {"sid": 505, "type": 1, "lcn": 54}, 
-            {"sid": 506, "type": 1, "lcn": 64},
-            {"sid": 507, "type": 1, "lcn": 74}, 
-            {"sid": 508, "type": 1, "lcn": 84}, 
-            {"sid": 509, "type": 1, "lcn": 94},
-        ]
-    },
-    {"ts": 6, 
-    "services": 
-        [
-            {"sid": 600, "type": 1, "lcn": 15}, 
-            {"sid": 601, "type": 1, "lcn": 25}, 
-            {"sid": 603, "type": 1, "lcn": 35},
-            {"sid": 604, "type": 1, "lcn": 45}, 
-            {"sid": 605, "type": 1, "lcn": 55}, 
-            {"sid": 606, "type": 1, "lcn": 65},
-            {"sid": 607, "type": 1, "lcn": 75}, 
-            {"sid": 608, "type": 1, "lcn": 85}, 
-            {"sid": 609, "type": 1, "lcn": 95},
-        ]
-    },
-    {"ts": 7, 
-    "services": 
-        [
-            {"sid": 700, "type": 1, "lcn": 16}, 
-            {"sid": 701, "type": 1, "lcn": 26}, 
-            {"sid": 703, "type": 1, "lcn": 36},
-            {"sid": 704, "type": 1, "lcn": 46}, 
-            {"sid": 705, "type": 1, "lcn": 56}, 
-            {"sid": 706, "type": 1, "lcn": 66},
-            {"sid": 707, "type": 1, "lcn": 76}, 
-            {"sid": 708, "type": 1, "lcn": 86}, 
-            {"sid": 709, "type": 1, "lcn": 96},
-        ]
-    },
-    {"ts": 8, 
-    "services": 
-        [
-            {"sid": 800, "type": 1, "lcn": 17}, 
-            {"sid": 801, "type": 1, "lcn": 27}, 
-            {"sid": 803, "type": 1, "lcn": 37},
-            {"sid": 804, "type": 1, "lcn": 47}, 
-            {"sid": 805, "type": 1, "lcn": 57}, 
-            {"sid": 806, "type": 1, "lcn": 67},
-            {"sid": 807, "type": 1, "lcn": 77}, 
-            {"sid": 808, "type": 1, "lcn": 87}, 
-            {"sid": 809, "type": 1, "lcn": 97},
-        ]
-    },
-    {"ts": 9, 
-    "services": 
-        [
-            {"sid": 900, "type": 1, "lcn": 18}, 
-            {"sid": 901, "type": 1, "lcn": 28}, 
-            {"sid": 903, "type": 1, "lcn": 38},
-            {"sid": 904, "type": 1, "lcn": 48}, 
-            {"sid": 905, "type": 1, "lcn": 58}, 
-            {"sid": 906, "type": 1, "lcn": 68},
-            {"sid": 907, "type": 1, "lcn": 78}, 
-            {"sid": 908, "type": 1, "lcn": 88}, 
-            {"sid": 909, "type": 1, "lcn": 98},
-        ]
-    },
-]
-
-
-
-
-
-
 transports = [1,2,3,4,5,6,7,8,9,10]
 
 events = [
@@ -248,52 +77,66 @@ events2 = [
         ]
 
 
-# #############################
-# # Network Information Table #
-# #############################
+#############################
+# Network Information Table #
+#############################
 
-# def NIT(network_id, transports, id):
+def NIT(network_id, transports, nit_id, descriptors):
 
-#     nit_file_name = "nit_" + str(id) + ".sec"
+    nit_file_name = "nit_" + str(nit_id) + ".sec"
 
-#     nit_sections = []
+    nit_sections = []
 
-#     # Get list of ts_lists
-#     sections_ts = check_length(nit_loops(transports)[0], transports, "NIT")
+    # Get list of ts_lists
+    sections_ts = check_length(
+        nit_loops(
+            transports, 
+            network_id = network_id, 
+            descriptors = descriptors)[0], 
+        transports, "NIT", 
+        network_id = network_id,
+        descriptors = descriptors)
 
-#     print (sections_ts)
+    # Generate NIT sections
+    if len(sections_ts) != 0:
 
-#     # Generate NIT sections
-#     if len(sections_ts) != 0:
+        for idx, i in enumerate(sections_ts):
 
-#         for idx, i in enumerate(sections_ts):
+            nit = network_information_section(
+                network_id = network_id,
+                network_descriptor_loop = nit_loops(
+                    i, 
+                    network_id = network_id, 
+                    descriptors = descriptors)[1], # Get first loop items
+                transport_stream_loop = nit_loops(
+                    i, 
+                    network_id = network_id, 
+                    descriptors = descriptors)[2], # Get second loop items
+                version_number = 1,
+                section_number = idx,
+                last_section_number = len(sections_ts) - 1
+            )
 
-#             nit = network_information_section(
-#                 network_id = network_id,
-#                 network_descriptor_loop = nit_loops(i)[1], # Get first loop items
-#                 transport_stream_loop = nit_loops(i)[2], # Get second loop items
-#                 version_number = 1,
-#                 section_number = idx,
-#                 last_section_number = len(sections_ts) - 1
-#             )
+            nit_sections.append(nit)
 
-#             nit_sections.append(nit)
+        # Write sections to nit.sec file
+        with open(nit_file_name, "wb") as DFILE:
+            for sec in nit_sections: 
+                print (sec)
+                DFILE.write(sec.pack())
+    else:
+        pass
 
-#         # Write sections to nit.sec file
-#         with open(nit_file_name, "wb") as DFILE:
-#             for sec in nit_sections: 
-#                 print (sec)
-#                 DFILE.write(sec.pack())
-#     else:
-#         pass
+nits = [{"network_id": 41007, "id": 1}]#, {"network_id": 41007, "id": 2}]
 
-# nits = [{"network_id": 41007, "id": 1}]#, {"network_id": 41007, "id": 2}]
+for nit in nits:
+    transports = nit_sql_main(nit["id"]) # Get transports list for BAT
 
-# for nit in nits:
-#     transports = nit_sql_main(nit["id"]) # Get transports list for BAT
-#     print (transports)
-#     NIT(nit["network_id"], transports, nit["id"]) # Generate Sections
-#     null_list("NIT") # Null section list for next loop
+    descriptors = nit_des_sql_main(nit["id"], transports) # Get descriptors for NIT
+    #print (descriptors)
+
+    NIT(nit["network_id"], transports, nit["id"], descriptors) # Generate Sections
+    null_list("NIT") # Null section list for next loop
 
 # #############################
 # # Bouquet Association Table #
@@ -348,34 +191,34 @@ events2 = [
 # Service Description Actual Table  (ETSI EN 300 468 5.2.3) #
 #############################################################
 
-sdt_sections = []
+# sdt_sections = []
 
-# Get list of svc_lists
-sections_ts = check_length(sdt_loops(services)[0], services, "SDT Actual")
+# # Get list of svc_lists
+# sections_ts = check_length(sdt_loops(services)[0], services, "SDT Actual")
 
-# Generate SDT sections
-if len(sections_ts) != 0:
+# # Generate SDT sections
+# if len(sections_ts) != 0:
 
-    for idx, i in enumerate(sections_ts):
+#     for idx, i in enumerate(sections_ts):
 
-        sdt = service_description_section(
-            transport_stream_id = 1,
-            original_network_id = 41007,
-            service_loop = sdt_loops(i)[1], #Get loop items
-            version_number = 1,
-            section_number = idx,
-            last_section_number = len(sections_ts) - 1,
-        )
+#         sdt = service_description_section(
+#             transport_stream_id = 1,
+#             original_network_id = 41007,
+#             service_loop = sdt_loops(i)[1], #Get loop items
+#             version_number = 1,
+#             section_number = idx,
+#             last_section_number = len(sections_ts) - 1,
+#         )
 
-        sdt_sections.append(sdt)
+#         sdt_sections.append(sdt)
 
-    # Write sections to bat.sec file
-    with open("./sdt_act.sec", "wb") as DFILE:
-        for sec in sdt_sections: 
-            print (sec)
-            DFILE.write(sec.pack())
-else:
-    pass
+#     # Write sections to bat.sec file
+#     with open("./sdt_act.sec", "wb") as DFILE:
+#         for sec in sdt_sections: 
+#             print (sec)
+#             DFILE.write(sec.pack())
+# else:
+#     pass
 
 
 # #############################################################

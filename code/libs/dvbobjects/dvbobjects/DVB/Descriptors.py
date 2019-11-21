@@ -263,7 +263,7 @@ class application_signalling_descriptor(Descriptor):
                 0xE0 | (self.AIT_version & 0x1F))
             
 ######################################################################
-class network_descriptor(Descriptor):#!
+class network_name_descriptor(Descriptor):#!
 
     descriptor_tag = 0x40
 
@@ -338,7 +338,7 @@ class transport_stream_terrestrial_descriptor(Descriptor):
            0xffffffff,)
 
 ######################################################################
-class transport_stream_sat_descriptor(Descriptor):
+class satellite_delivery_system_descriptor(Descriptor):
 
     descriptor_tag = 0x43
  
