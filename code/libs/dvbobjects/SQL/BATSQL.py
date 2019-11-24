@@ -1,22 +1,5 @@
 import psycopg2
-
-def connect():
-    '''This function connect to PSQL DB
-    and return connection'''
-
-    conn = None
-
-    try:
-        print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(
-            host="192.168.93.128",
-            database="DVBCAST", 
-            user="root", 
-            password="root")
-        return conn
-    except:
-        print ("Error")
-
+from .db_connect import connect
 
 def get_bat_ts(conn, bat_id):
     '''This function return DISTINCT (NOT DUPLICATE) transport id's
@@ -27,6 +10,7 @@ def get_bat_ts(conn, bat_id):
         cur.execute("SELECT DISTINCT transport_id FROM \
             bat_to_transports WHERE bat_id=%s" % bat_id)
         bat_transports = cur.fetchall()
+        #print(bat_transports)
         return bat_transports
     except psycopg2.Error as e:
         print (e)
@@ -92,7 +76,8 @@ def bat_ts_list(conn, ts_list, bat_id, result_list):
 
 
 def bat_sql_main(bat_id):
-    '''BAT SQL Main function'''
+    '''BAT SQL Main function. Get 
+    bat_id as args'''
 
     bat_to_transports = []
 

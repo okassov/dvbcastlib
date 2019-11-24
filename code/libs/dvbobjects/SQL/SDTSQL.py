@@ -1,93 +1,79 @@
 import psycopg2
-
-def connect():
-    '''This function connect to PSQL DB
-    and return connection'''
-
-    conn = None
-
-    try:
-        print('Connecting to the PostgreSQL database...')
-        conn = psycopg2.connect(
-            host="192.168.93.128",
-            database="DVBCAST", 
-            user="root", 
-            password="root")
-        return conn
-    except:
-        print ("Error")
+from .db_connect import connect
 
 
-def get_nit_ts(conn, nit_id):
-    '''This function return DISTINCT (NOT DUPLICATE) transport id's
-    from nit_to_services TABLE'''
+# def get_transports(conn, network_id):
+#     '''This function return transport id's
+#     from nit_to_services TABLE'''
 
-    cur = conn.cursor()
-    try:
-        cur.execute("SELECT transport_id FROM \
-            transports WHERE network=%s" % nit_id)
-        nit_transports = cur.fetchall()
-        return nit_transports
-    except psycopg2.Error as e:
-        print (e)
-    finally:
-        cur.close()
+#     cur = conn.cursor()
+#     try:
+#         cur.execute("SELECT transport_id FROM \
+#             transports WHERE network=%s" % network_id)
+#         transports = cur.fetchall()
+#         return transports
+#     except psycopg2.Error as e:
+#         print (e)
+#     finally:
+#         cur.close()
 
 
-def get_nit_svc(conn, ts_id):
+def get_services(conn, transport_id):
     '''This function return services data 
     from services TABLE'''
 
     cur = conn.cursor()
 
     try:
-        cur.execute("SELECT service_id, service_type FROM \
-            services WHERE transport=%s" % ts_id)
-        svc = cur.fetchall()
-        return svc
+        cur.execute("SELECT id, service_id FROM \
+            services WHERE transport=%s" % transport_id)
+        services = cur.fetchall()
+        return services
     except psycopg2.Error as e:
         print (e)
     finally:
         cur.close()
 
 
-def nit_ts_list(conn, ts_list, result_list):
-    '''This function generate and return list
-    for BAT Generation. Get transports list and 
-    nit_id as ARG'''
+def mapping(transport_id, services):
+    '''This function map service_ids to transport.
+    It's get transport_id and list of services with
+    data in tupple as args.
+    For example:
+    Input transport_id: 1
+    Inpurt services: [(service_1_data, ...), (service_2_data, ...), ...]
+    
+    Output result: {"ts" 1, "services": [service_1_data, service_2_data]}
+    '''
 
-    for ts in ts_list:
+    result = {"ts": transport_id, "services": []}
 
-        cur = conn.cursor()
+    for svc in services:
 
-        result_list.append({"ts": ts[0], "services": []})
+        id = svc[0]
+        service_id = svc[1]
 
-        service_data = get_nit_svc(conn, ts[0])
+        result["services"].append({"id": id, "service_id": service_id})
 
-        for svc in service_data:
-            for i in result_list:
-                if i["ts"] == ts[0]:
-                    i["services"].append(
-                        {
-                            "sid": svc[0], 
-                            "type": svc[1], 
-                            "lcn": svc[1]
-                        }
-                    )
-                else:
-                    pass
-    return result_list
+    return result
 
 
-def sdt_sql_main(ts_id):
+def sdt_sql_main(transport_id):
     '''BAT SQL Main function'''
-
-    sdt_to_transports = []
 
     conn = connect()
 
-    result = nit_ts_list(conn, get_nit_ts(conn, nit_id), nit_to_transports)
+    transports_with_services = []
+
+    # transports = get_transports(conn, network_id) # Get all transports of network
+
+    services = get_services(conn, transport_id) # Get all services with data of this ts
+    mapped = mapping(transport_id, services) # Mapping transport to services
+    transports_with_services.append(mapped) # Append mapping to result list
     
     conn.close()
 
-    return result
+    return transports_with_services
+
+
+#sdt_sql_main(1)

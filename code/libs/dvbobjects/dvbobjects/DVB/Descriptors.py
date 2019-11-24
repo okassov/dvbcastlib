@@ -1328,7 +1328,7 @@ class epg_information_descriptor(Descriptor):
 
 ############################################################################
 
-class e2_descriptor_loop_item(DVBobject):
+class nds_e2_descriptor_loop_item(DVBobject):
 
     def pack(self):
 
@@ -1336,23 +1336,23 @@ class e2_descriptor_loop_item(DVBobject):
 
         return pack(fmt, self.service_ID, self.logical_channel_number)
 
-class e2_descriptor(Descriptor):
+class nds_e2_descriptor(Descriptor):
 
     descriptor_tag = 0xE2
 
     def bytes(self):
 
-        e2_bytes = b"".join(
+        nds_e2_bytes = b"".join(
             map(lambda x: x.pack(),    
-            self.e2_descriptor_loop))                                    
+            self.nds_e2_descriptor_loop))                                    
 
-        fmt = "!%ds" % len(e2_bytes)
+        fmt = "!%ds" % len(nds_e2_bytes)
 
-        return pack(fmt, e2_bytes)
+        return pack(fmt, nds_e2_bytes)
 
 ############################################################################
 
-class e4_descriptor_loop_item(DVBobject):
+class nds_e4_descriptor_loop_item(DVBobject):
 
     def pack(self):
 
@@ -1360,19 +1360,19 @@ class e4_descriptor_loop_item(DVBobject):
 
         return pack(fmt, self.service_ID, self.general_order, self.order_by_type)
 
-class e4_descriptor(Descriptor):
+class nds_e4_descriptor(Descriptor):
 
     descriptor_tag = 0xE4
 
     def bytes(self):
 
-        e4_bytes = b"".join(
+        nds_e4_bytes = b"".join(
             map(lambda x: x.pack(),    
-            self.e4_descriptor_loop))                                    
+            self.nds_e4_descriptor_loop))                                    
 
-        fmt = "!%ds" % len(e4_bytes)
+        fmt = "!%ds" % len(nds_e4_bytes)
 
-        return pack(fmt, e4_bytes)
+        return pack(fmt, nds_e4_bytes)
 
 ######################################################################################
 

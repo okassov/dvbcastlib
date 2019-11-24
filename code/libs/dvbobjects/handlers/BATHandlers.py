@@ -1,24 +1,14 @@
 from dvbobjects.DVB.Descriptors import *
 from dvbobjects.MPEG.Descriptors import *
-
-
-####################
-# Default Handlers #                                     
-####################
-
-def get_dict_key(dictionary):
-    '''This function get dict as arg
-    and return it's key in string format'''
-
-    for i in dictionary.keys():
-        return i
+from .DefaultHandlers import *
+import itertools # Need for iterate nds_e4_descriptor, because it's have 3 list
 
 
 #########################################################
 # Handlers for NIT First Loop (Network Descriptor Loop) #
 #########################################################
 
-def network_name_descriptor_func(items):
+def bouquet_name_descriptor_func(items):
     '''This function get dict as arg.
     Input dict format ===>
     {
@@ -33,83 +23,16 @@ def network_name_descriptor_func(items):
     Return out of network_name_descriptor
     '''
 
-    if get_dict_key(items) == "network_name_descriptor":
+    if get_dict_key(items) == "bouquet_name_descriptor":
 
-        body = items["network_name_descriptor"]
-        result = network_name_descriptor(
-            network_name = bytes(body["network_name"], encoding="utf-8")
+        body = items["bouquet_name_descriptor"]
+        result = bouquet_name_descriptor(
+            bouquet_name = bytes(body["bouquet_name"], encoding="utf-8")
             )
 
         return result
     else:
         pass
-
-def multilingual_network_descriptor_func(items):
-    '''This function get dict as arg.
-    Input dict format ===>
-    {
-        "descriptor_name: 
-            {
-            "descirptor_value1": descriptor_data1,
-            "descirptor_value2": descriptor_data2,
-            "descirptor_value3": descriptor_data3,
-            ...
-            }
-    }
-    Return out of multilingual_network_descriptor
-    '''
-
-    multilingual_network_descriptor_loop = []
-
-    if get_dict_key(items) == "multilingual_network_descriptor":
-
-        body = items["multilingual_network_descriptor"]
-
-        language_codes = body["ISO_639_language_code"]
-        network_names = body["network_name"]
-
-        for (code, name) in zip(language_codes, network_names):
-            multilingual_network_descriptor_loop.append(
-                multilingual_network_descriptor_loop_item(
-                    ISO_639_language_code = bytes(code, encoding="utf-8"),
-                    network_name = bytes(name, encoding="utf-8")
-                )
-            )
-
-        result = multilingual_network_descriptor(
-            multilingual_network_descriptor_loop = multilingual_network_descriptor_loop)
-
-        return result
-    else:
-        pass
-
-# def private_data_specifier_descriptor_func(items):
-#     '''This function get dict as arg.
-#     Input dict format ===>
-#     {
-#         "descriptor_name: 
-#             {
-#             "descirptor_value1": descriptor_data1,
-#             "descirptor_value2": descriptor_data2,
-#             "descirptor_value3": descriptor_data3,
-#             ...
-#             }
-#     }
-#     Return out of private_data_specifier_descriptor
-#     '''
-
-#     if get_dict_key(items) == "private_data_specifier_descriptor":
-
-#         body = items["private_data_specifier_descriptor"]
-
-#         result = private_data_specifier_descriptor(
-#             private_data_specifier = body["private_data_specifier"]
-#             )
-
-#         return result
-#     else:
-#         pass
-
 
 ############################################################
 # Handlers for NIT Second Loop (Transport Descriptor Loop) #
@@ -165,13 +88,12 @@ def service_list_descriptor_func(items):
                 )
         else:
             pass
-
     result = service_list_descriptor(dvb_service_descriptor_loop = dvb_service_descriptor_loop)
 
     return result
 
 
-def satellite_delivery_system_descriptor_func(items):
+def nds_e2_descriptor_func(items):
     '''This function get dict as arg.
     Input dict format ===>
     {
@@ -202,24 +124,83 @@ def satellite_delivery_system_descriptor_func(items):
     Return out of service_list_descriptor
     '''
 
+    nds_e2_descriptor_loop = []
+
     for item in items["descriptors"]:
+        if get_dict_key(item) == "nds_e2_descriptor":
 
-        if get_dict_key(item) == "satellite_delivery_system_descriptor":
+            body = item["nds_e2_descriptor"]
 
-            body = item["satellite_delivery_system_descriptor"]
+            service_ids = body["service_id"] # Get list of Service IDs
+            lcns = body["logical_channel_number"] # Get list of LCNs
 
-            result = satellite_delivery_system_descriptor(
-                        frequency = body["frequency"],
-                        orbital_position = body["orbital_position"],
-                        west_east_flag = body["west_east_flag"],
-                        polarization = body["polarization"],
-                        roll_off = body["roll_off"],
-                        modulation_system = body["modulation_system"],
-                        modulation_type = body["modulation_type"],
-                        symbol_rate = body["symbol_rate"],
-                        FEC_inner = body["FEC_inner"]
+            for (sid, lcn) in zip(service_ids, lcns):
+                nds_e2_descriptor_loop.append(
+                    nds_e2_descriptor_loop_item(
+                        service_ID = sid,
+                        logical_channel_number = lcn
                     )
-
-            return result
+                )
         else:
             pass
+
+    result = nds_e2_descriptor(nds_e2_descriptor_loop = nds_e2_descriptor_loop)
+
+    return result
+
+
+def nds_e4_descriptor_func(items):
+    '''This function get dict as arg.
+    Input dict format ===>
+    {
+        "ts": id,
+        "descriptors:
+            [ 
+                {
+                    "descriptor1_name": 
+                        {
+                        "descirptor1_value1": descriptor_data1,
+                        "descirptor1_value2": descriptor_data2,
+                        "descirptor1_value3": descriptor_data3,
+                        ...
+                        },
+                },
+                {
+                    "descriptor2_name": 
+                        {
+                        "descirptor2_value1": descriptor_data1,
+                        "descirptor2_value2": descriptor_data2,
+                        "descirptor2_value3": descriptor_data3,
+                        ...
+                        },
+                },
+                ...  
+            ]
+    }
+    Return out of service_list_descriptor
+    '''
+    nds_e4_descriptor_loop = []
+
+    for item in items["descriptors"]:
+        if get_dict_key(item) == "nds_e4_descriptor":
+
+            body = item["nds_e4_descriptor"]
+
+            service_ids = body["service_id"] # Get list of Service IDs
+            general_orders = body["general_order"] # Get list of General Orders
+            order_by_types = body["order_by_type"] # Get list of Order by Types
+
+            for (sid, general_order, order_by_type) in zip(service_ids, general_orders, order_by_types):
+                nds_e4_descriptor_loop.append(
+                    nds_e4_descriptor_loop_item(
+                        service_ID = sid,
+                        general_order = general_order,
+                        order_by_type = order_by_type
+                    )
+                )
+        else:
+            pass
+    result = nds_e4_descriptor(nds_e4_descriptor_loop = nds_e4_descriptor_loop)
+
+    return result
+

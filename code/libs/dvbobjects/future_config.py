@@ -17,6 +17,10 @@ from dateutil.rrule import *
 from dateutil.parser import *
 from SQL.BATSQL import *
 from SQL.NITSQL import *
+#from SQL.SDTSQL import *
+from SQL.SDTSQLtest import *
+from SQL.BATSQLDescriptors import *
+#from SQL.SDTSQLDescriptors import *
 import time
 
 
@@ -31,8 +35,6 @@ services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1]
             [170, 1], [270, 1], [370, 1], [470, 1], [570, 1], [670, 1], [770, 1], [870, 1], [970, 1],
             [180, 1], [280, 1], [380, 1], [480, 1], [580, 1], [680, 1], [780, 1], [880, 1], [980, 1],
             [190, 1], [290, 1], [390, 1], [490, 1]]
-
-transports = [1,2,3,4,5,6,7,8,9,10]
 
 events = [
             {"event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
@@ -77,99 +79,109 @@ events2 = [
         ]
 
 
-#############################
-# Network Information Table #
-#############################
+# #############################
+# # Network Information Table #
+# #############################
 
-def NIT(network_id, transports, nit_id, descriptors):
+# def NIT(network_id, transports, nit_id, descriptors):
 
-    nit_file_name = "nit_" + str(nit_id) + ".sec"
+#     nit_file_name = "nit_" + str(nit_id) + ".sec"
 
-    nit_sections = []
+#     nit_sections = []
 
-    # Get list of ts_lists
-    sections_ts = check_length(
-        nit_loops(
-            transports, 
-            network_id = network_id, 
-            descriptors = descriptors)[0], 
-        transports, "NIT", 
-        network_id = network_id,
-        descriptors = descriptors)
+#     # Get list of ts_lists
+#     sections_ts = check_length(
+#         nit_loops(
+#             transports, 
+#             network_id = network_id, 
+#             descriptors = descriptors)[0], 
+#         transports, "NIT", 
+#         network_id = network_id,
+#         descriptors = descriptors)
 
-    # Generate NIT sections
-    if len(sections_ts) != 0:
+#     # Generate NIT sections
+#     if len(sections_ts) != 0:
 
-        for idx, i in enumerate(sections_ts):
+#         for idx, i in enumerate(sections_ts):
 
-            nit = network_information_section(
-                network_id = network_id,
-                network_descriptor_loop = nit_loops(
-                    i, 
-                    network_id = network_id, 
-                    descriptors = descriptors)[1], # Get first loop items
-                transport_stream_loop = nit_loops(
-                    i, 
-                    network_id = network_id, 
-                    descriptors = descriptors)[2], # Get second loop items
-                version_number = 1,
-                section_number = idx,
-                last_section_number = len(sections_ts) - 1
-            )
+#             nit = network_information_section(
+#                 network_id = network_id,
+#                 network_descriptor_loop = nit_loops(
+#                     i, 
+#                     network_id = network_id, 
+#                     descriptors = descriptors)[1], # Get first loop items
+#                 transport_stream_loop = nit_loops(
+#                     i, 
+#                     network_id = network_id, 
+#                     descriptors = descriptors)[2], # Get second loop items
+#                 version_number = 1,
+#                 section_number = idx,
+#                 last_section_number = len(sections_ts) - 1
+#             )
 
-            nit_sections.append(nit)
+#             nit_sections.append(nit)
 
-        # Write sections to nit.sec file
-        with open(nit_file_name, "wb") as DFILE:
-            for sec in nit_sections: 
-                print (sec)
-                DFILE.write(sec.pack())
-    else:
-        pass
+#         # Write sections to nit.sec file
+#         with open(nit_file_name, "wb") as DFILE:
+#             for sec in nit_sections: 
+#                 print (sec)
+#                 DFILE.write(sec.pack())
+#     else:
+#         pass
 
-nits = [{"network_id": 41007, "id": 1}]#, {"network_id": 41007, "id": 2}]
+# nits = [{"network_id": 41007, "id": 1}]#, {"network_id": 41007, "id": 2}]
 
-for nit in nits:
-    transports = nit_sql_main(nit["id"]) # Get transports list for BAT
+# for nit in nits:
+#     transports = nit_sql_main(nit["id"]) # Get transports list for BAT
 
-    descriptors = nit_des_sql_main(nit["id"], transports) # Get descriptors for NIT
-    #print (descriptors)
+#     descriptors = nit_des_sql_main(nit["id"], transports) # Get descriptors for NIT
+#     #print (descriptors)
 
-    NIT(nit["network_id"], transports, nit["id"], descriptors) # Generate Sections
-    null_list("NIT") # Null section list for next loop
+#     NIT(nit["network_id"], transports, nit["id"], descriptors) # Generate Sections
+#     null_list("NIT") # Null section list for next loop
+
 
 # #############################
 # # Bouquet Association Table #
 # #############################
-# def BAT(bouquet_id, transports):
+
+# def BAT(bouquet_id, transports, descriptors):
 
 #     bat_file_name = "bat_" + str(bouquet_id) + ".sec"
 
 #     bat_sections = []
 
 #     # Get list of ts_lists
-#     sections_ts = check_length(bat_loops(transports)[0], transports, "BAT")
+#     sections_ts = check_length(
+#         bat_loops(
+#             transports,
+#             bouquet_id = bouquet_id, 
+#             descriptors = descriptors)[0], 
+#         transports, "BAT",
+#         bouquet_id = bouquet_id,
+#         descriptors = descriptors)
 
-#     print (sections_ts)
-#     print ('\n')
-    
 #     # Generate BAT sections
 #     if len(sections_ts) != 0:
 
-#         for idx, i in enumerate(sections_ts):
+#         for idx, (i,j) in enumerate(zip(sections_ts[0], sections_ts[1])):
 
 #             bat = bouquet_association_section(
 #                 bouquet_id = bouquet_id,
-#                 bouquet_descriptor_loop = bat_loops(i)[1], #Get first loop items
-#                 transport_stream_loop = bat_loops(i)[2], #Get second loop items
+#                 bouquet_descriptor_loop = bat_loops(
+#                     i,
+#                     bouquet_id = bouquet_id,
+#                     descriptors = j)[1], #Get first loop items
+#                 transport_stream_loop = bat_loops(
+#                     i, 
+#                     bouquet_id = bouquet_id,
+#                     descriptors = j)[2], #Get second loop items
 #                 version_number = 1,
 #                 section_number = idx,
 #                 last_section_number = len(sections_ts) - 1,
 #             )
 
 #             bat_sections.append(bat)
-
-#         print (bat_sections)
 
 #         # Write sections to bat.sec file
 #         with open(bat_file_name, "wb") as DFILE:
@@ -184,42 +196,116 @@ for nit in nits:
 
 # for bat in bats:
 #     transports = bat_sql_main(bat["id"]) # Get transports list for BAT
-#     BAT(bat["bouquet_id"], transports) # Generate Sections
+#     descriptors = bat_des_sql_main(bat["id"], transports) # Get descriptors for NIT
+#     print("\n")
+#     print("*FIRST**FIRST**FIRST**FIRST**FIRST**FIRST**FIRST**FIRST**FIRST*")
+#     print (descriptors)
+#     print("*FIRST**FIRST**FIRST**FIRST**FIRST**FIRST**FIRST**FIRST**FIRST*")
+#     print("\n")
+#     BAT(bat["bouquet_id"], transports, descriptors) # Generate Sections
 #     null_list("BAT") # Null section list for next loop
 
+
 #############################################################
-# Service Description Actual Table  (ETSI EN 300 468 5.2.3) #
+#Service Description Actual Table  (ETSI EN 300 468 5.2.3) #
 #############################################################
 
-# sdt_sections = []
+# def SDTActual(transport, transport_id, descriptors):
 
-# # Get list of svc_lists
-# sections_ts = check_length(sdt_loops(services)[0], services, "SDT Actual")
+#     sdt_file_name = "sdt_act_" + str(transport_id) + ".sec"
 
-# # Generate SDT sections
-# if len(sections_ts) != 0:
+#     sdt_sections = []
 
-#     for idx, i in enumerate(sections_ts):
+#     # Get list of svc_lists
+#     sections_ts = check_length_sdt(
+#         sdt_loops(
+#             transport, 
+#             descriptors = descriptors)[0], 
+#         transport,
+#         transport_id,
+#         "SDT Actual",
+#         descriptors = descriptors)
 
-#         sdt = service_description_section(
-#             transport_stream_id = 1,
-#             original_network_id = 41007,
-#             service_loop = sdt_loops(i)[1], #Get loop items
-#             version_number = 1,
-#             section_number = idx,
-#             last_section_number = len(sections_ts) - 1,
-#         )
+#     # Generate SDT sections
+#     if len(sections_ts) != 0:
 
-#         sdt_sections.append(sdt)
+#         for idx, (i,j) in enumerate(zip(sections_ts[0], sections_ts[1])):
 
-#     # Write sections to bat.sec file
-#     with open("./sdt_act.sec", "wb") as DFILE:
-#         for sec in sdt_sections: 
-#             print (sec)
-#             DFILE.write(sec.pack())
-# else:
-#     pass
+#             sdt = service_description_section(
+#                 transport_stream_id = transport_id,
+#                 original_network_id = 41007,
+#                 service_loop = sdt_loops(i, descriptors = j)[1], #Get loop items
+#                 version_number = 1,
+#                 section_number = idx,
+#                 last_section_number = len(sections_ts) - 1,
+#             )
 
+#             sdt_sections.append(sdt)
+
+#         # Write sections to bat.sec file
+#         with open(sdt_file_name, "wb") as DFILE:
+#             for sec in sdt_sections: 
+#                 print (sec)
+#                 DFILE.write(sec.pack())
+#     else:
+#         pass
+
+# std_acts = [{"id": 1}]
+
+# for sdt in std_acts:
+
+#     transport = sdt_sql_main(sdt["id"])
+#     descriptors = sdt_des_sql_main(sdt["id"])
+
+#     SDTActual(transport, sdt["id"], descriptors)
+
+
+def SDTActual(transport, transport_id):
+
+    sdt_file_name = "sdt_act_" + str(transport_id) + ".sec"
+
+    sdt_sections = []
+
+    # Get list of svc_lists
+    sections_ts = check_length_sdt(
+        sdt_loops(
+            transport)[0], 
+        transport,
+        transport_id,
+        "SDT Actual")
+
+    # Generate SDT sections
+    if len(sections_ts) != 0:
+
+        for idx, i in enumerate(sections_ts):
+
+            sdt = service_description_section(
+                transport_stream_id = transport_id,
+                original_network_id = 41007,
+                service_loop = sdt_loops(i)[1], #Get loop items
+                version_number = 1,
+                section_number = idx,
+                last_section_number = len(sections_ts) - 1,
+            )
+
+            sdt_sections.append(sdt)
+
+        # Write sections to bat.sec file
+        with open(sdt_file_name, "wb") as DFILE:
+            for sec in sdt_sections: 
+                print (sec)
+                DFILE.write(sec.pack())
+    else:
+        pass
+
+std_acts = [{"id": 1}]
+
+for sdt in std_acts:
+
+    transport = sdt_sql_main(sdt["id"])
+    #descriptors = sdt_des_sql_main(sdt["id"])
+
+    SDTActual(transport, sdt["id"])
 
 # #############################################################
 # # Service Description Other Table  (ETSI EN 300 468 5.2.3)  #
