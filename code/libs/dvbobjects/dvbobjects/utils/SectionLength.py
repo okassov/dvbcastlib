@@ -11,6 +11,7 @@ from SQL.NITSQLDescriptors import *
 from handlers.NITHandlers import *
 from handlers.BATHandlers import *
 from handlers.SDTHandlers import *
+from handlers.EITHandlers import *
 from handlers.DefaultHandlers import *
 
 # For BAT sections
@@ -287,62 +288,76 @@ def sdt_loops(transport, *args, **kwargs):
     return sec_len(service_loop), service_loop
 
 
-def eit_loops(events_list):
+def EIT_loops(events, descriptors):
+    '''This function create EIT loop. Get events
+    and descriptors of service as args. Return list
+    with EIT sections.
+
+    Input: 
+    events = { 
+        "first event": [ 
+                        id, year, mon, day, hour, min, sec, dhour, dmin, 
+                        dsec, EIT, loop, network, transport, service
+                        ] 
+        "descriptors": [{event1_descriptor}, {event1_descriptor}, ...]
+        }
+    descriptors = [{service1_descriptor1}, {service1_descriptor2}, ...]
+
+    Output:
+    el = [EIT_section1, EIT_section2, ...]
+    '''
+    
+    event_descriptor_loop = []
+
+    if "first_event" in events:
+        key = "first_event"
+    else:
+        key = "second_event"
+
+    # Add descriptors to loop
+    for descriptor in descriptors:
+        if component_descriptor_func(descriptor) != None:
+            event_descriptor_loop.append(component_descriptor_func(descriptor))
+            print ("component")
+        elif ca_identifier_descriptor_func(descriptor) != None:
+            event_descriptor_loop.append(ca_identifier_descriptor_func(descriptor))
+            print ("ca")
+        elif parental_rating_descriptor_func(descriptor) != None:
+            event_descriptor_loop.append(parental_rating_descriptor_func(descriptor))
+            print ("parental")
+        else:
+            pass  
+
+    # Add event descriptors to loop
+    for event_descriptor in events["descriptors"]:
+        if short_event_descriptor_func(event_descriptor) != None:
+            event_descriptor_loop.append(short_event_descriptor_func(event_descriptor))   
+            print ("short")  
+        elif extended_event_descriptor_func(event_descriptor) != None:
+            event_descriptor_loop.append(extended_event_descriptor_func(event_descriptor))
+            print ("extended")
+        else:
+            pass
 
     el = event_loop = [
         event_loop_item(
-            event_id = i["event_id"], 
-            start_year = 108, # since 1900
-            start_month = 6, 
-            start_day = 10,
-            start_hours = 0x23,
-            start_minutes = 0x30,
-            start_seconds = 0x00, 
-            duration_hours = 0x12, 
-            duration_minutes = 0x00,
-            duration_seconds = 0x00, 
+            event_id = events[key][0],
+            start_year = events[key][1] - 1900, # since 1900
+            start_month = events[key][2], 
+            start_day = events[key][3],
+            start_hours = events[key][4],
+            start_minutes = events[key][5],
+            start_seconds = events[key][6], 
+            duration_hours = events[key][7], 
+            duration_minutes = events[key][8],
+            duration_seconds = events[key][9], 
             running_status = 4, # 4 service is running, 1 not running, 2 starts in a few seconds, 3 pausing
             free_CA_mode = 0, # 0 means service is not scrambled, 1 means at least a stream is scrambled
-            event_descriptor_loop = [
-                component_descriptor (
-                    stream_content = 1,
-                    component_type = 1,
-                    component_tag = 0,
-                    ISO_639_language_code = b"rus",
-                    text_char = b"Description of component"
-                ),
-                ca_identifier_descriptor (
-                    ca_identifier_descriptor_loop = [
-                        ca_identifier_descriptor_loop_item (
-                            ca_system_id = 2514
-                        )
-                    ]
-                ),
-                parental_rating_descriptor (
-                    country_code = b"KAZ",
-                    rating = 1
-                ),
-                extended_event_descriptor (
-                    descriptor_number = 0,
-                    last_descriptor_number = 0,
-                    ISO639_language_code = b"KAZ",
-                    extended_event_loop = [
-                        extended_event_loop_item(
-                            item = b"",
-                            item_description = b""
-                        )
-                    ],
-                    text = b"asdasd"
-                ),
-                short_event_descriptor (
-                    ISO639_language_code = b"KAZ", 
-                    event_name = i["event_name"],
-                    text = i["text"], 
-                )    
-            ],
-        ) for i in events_list
+            event_descriptor_loop = event_descriptor_loop
+        )
     ]
-    return sec_len(el), el
+
+    return el
 
 
 def check_length(item_length, items_list, table, *args, **kwargs):
@@ -497,6 +512,8 @@ def null_list(dvb_table):
         nit_ts_for_sections.clear()
     elif dvb_table == "SDT Actual": 
         sdt_act_for_sections.clear()
+    elif dvb_table == "EIT Actual Schedule": 
+        eit_sched_for_sections.clear()
     else:
         pass
 

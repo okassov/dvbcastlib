@@ -12,15 +12,15 @@ class short_event_descriptor(Descriptor):#!
     
     def bytes(self):
 
-        assert len(self.ISO639_language_code) == 3
+        assert len(self.ISO_639_language_code) == 3
 
         fmt = "!%dsB%dsB%ds" % (
-            len(self.ISO639_language_code),
+            len(self.ISO_639_language_code),
             len(self.event_name),
             len(self.text))
 
         return pack(fmt,
-            self.ISO639_language_code,
+            self.ISO_639_language_code,
             len(self.event_name),
             self.event_name,
             len(self.text),
@@ -1131,17 +1131,17 @@ class extended_event_descriptor(Descriptor):
             map(lambda x: x.pack(),    
             self.extended_event_loop))
 
-        assert len(self.ISO639_language_code) == 3
+        assert len(self.ISO_639_language_code) == 3
 
         fmt = "!B%dsB%dsB%ds" % (
-            len(self.ISO639_language_code), 
+            len(self.ISO_639_language_code), 
             len(item_bytes), 
             len(self.text))
 
         return pack(fmt,
             (self.descriptor_number & 0xF) << 4 |
             (self.last_descriptor_number & 0xF),
-            self.ISO639_language_code,
+            self.ISO_639_language_code,
             len(item_bytes),
             item_bytes,
             len(self.text),

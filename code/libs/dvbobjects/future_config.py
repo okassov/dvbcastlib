@@ -17,7 +17,8 @@ from dateutil.rrule import *
 from dateutil.parser import *
 from SQL.BATSQL import *
 from SQL.NITSQL import *
-from SQL.EITSQLActualSchedule import *
+#from SQL.EITSQLActualSchedule import *
+from SQL.EITActualPFSQL import *
 #from SQL.SDTSQL import *
 from SQL.SDTSQLtest import *
 from SQL.BATSQLDescriptors import *
@@ -317,42 +318,35 @@ for sdt in sdt_oth:
         pass
 
 ###############################################
-# EIT Actual Schedule (ETSI EN 300 468 5.2.4) #
+# EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
 ###############################################
 
-def EITActualSchedule(transport, transport_id):
+def EITActualPF(services, transport_id):
 
-    sdt_file_name = "eit_act_sch_" + str(transport_id) + ".sec"
+    eit_file_name = "eit_act_pf_" + str(transport_id) + ".sec"
 
-    eit_schedule_sections = []
+    eit_actual_pf_sections = []
 
-    sections_ts = check_length_eit(eit_loops(transport)[0], transport, "EIT Schedule")
+    for i in services:
+        
+        if len(i["events"]) != 0:  
 
-    print (transport)
-
-    transport = transport[0]
-
-    for i in transport["services"]:
-
-        if len(sections_ts) != 0:  
-
-            for idx, j in enumerate(sections_ts):
-                eit_schedule = event_information_section(
-                    table_id = EIT_ACTUAL_TS_SCHEDULE14,
-                    service_id = i,
-                    transport_stream_id = 1,
+            for idx, j in enumerate(i["events"]):
+                eit_actual_pf = event_information_section(
+                    table_id = EIT_ACTUAL_TS_PRESENT_FOLLOWING,
+                    service_id = i["id"],
+                    transport_stream_id = transport_id,
                     original_network_id = 41007,
-                    event_loop = eit_loops(j)[1], #Get loop items
-                    segment_last_section_number = 1,
+                    event_loop = EIT_loops(j, i["descriptors"]), #Get loop items
+                    segment_last_section_number = len(i["events"]) - 1,
                     version_number = 1, 
                     section_number = idx,
-                    last_section_number = len(sections_ts) - 1, 
+                    last_section_number = len(i["events"]) - 1, 
                 )
-                eit_schedule_sections.append(eit_schedule)
-
-            # Write sections to bat.sec file
-            with open("./eit_sch.sec", "wb") as DFILE:
-                for sec in eit_schedule_sections: 
+                eit_actual_pf_sections.append(eit_actual_pf)
+            # Write sections to eit.sec file
+            with open(eit_file_name, "wb") as DFILE:
+                for sec in eit_actual_pf_sections: 
                     print (sec)
                     DFILE.write(sec.pack())
         else:
@@ -360,50 +354,54 @@ def EITActualSchedule(transport, transport_id):
     else:
         pass
 
-eit_act_sch = [{"id": 1}, {"id": 2}]
+eit_act_pf = [{"id": 1}, {"id": 2}]
 
-for eit in eit_act_sch:
-    transport = eit_sql_main(eit["id"])
-    if len(transport) != 0:
-        EITActualSchedule(transport, eit["id"])
-        null_list("EIT Schedule") # Null section list for next loop
+for eit in eit_act_pf:
+    services = eit_sql_main(eit["id"])
+
+    if len(services) != 0:
+        EITActualPF(services, eit["id"])
+        null_list("EIT Actual PF") # Null section list for next loop
     else:
         pass
+
 # # ########################################################
 # # # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
 # # ########################################################
 
-# eit_actual_pf_sections = []
+def EITActualSchedule():
 
-# sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Actual_PF")
+    eit_actual_schedule_sections = []
 
-# if len(sections_ts) != 0:
+    sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Actual_Schedule")
 
-#     for idx, i in enumerate(sections_ts):
+    if len(sections_ts) != 0:
 
-#         for jdx, j in enumerate(i):
+        for idx, i in enumerate(sections_ts):
 
-#             eit_actual_pf = event_information_section(
-#                 table_id = EIT_ACTUAL_TS_PRESENT_FOLLOWING,
-#                 service_id = i[0]["sid"],
-#                 transport_stream_id = 1,
-#                 original_network_id = 41007,
-#                 event_loop = eit_loops([j])[1], #Get loop items
-#                 segment_last_section_number = 1,
-#                 version_number = 1, 
-#                 section_number = jdx,
-#                 last_section_number = len(i) - 1, 
-#             )
+            for jdx, j in enumerate(i):
 
-#             eit_actual_pf_sections.append(eit_actual_pf)
+                eit_actual_schedule = event_information_section(
+                    table_id = EIT_ACTUAL_TS_SCHEDULE14,
+                    service_id = i[0]["sid"],
+                    transport_stream_id = 1,
+                    original_network_id = 41007,
+                    event_loop = eit_loops([j])[1], #Get loop items
+                    segment_last_section_number = 1,
+                    version_number = 1, 
+                    section_number = jdx,
+                    last_section_number = len(i) - 1, 
+                )
 
-#     # Write sections to eit_act_pf.sec file
-#     with open("./eit_act_pf.sec", "wb") as DFILE:
-#         for sec in eit_actual_pf_sections: 
-#             print (sec)
-#             DFILE.write(sec.pack())
-# else:
-#     pass
+                eit_actual_schedule_sections.append(eit_actual_schedule)
+
+        # Write sections to eit_act_pf.sec file
+        with open("./eit_act_sch.sec", "wb") as DFILE:
+            for sec in eit_actual_schedule_sections: 
+                print (sec)
+                DFILE.write(sec.pack())
+    else:
+        pass
 
 
 # #######################################################

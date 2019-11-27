@@ -1,6 +1,6 @@
 import psycopg2
 import datetime
-from db_connect import connect
+from .db_connect import connect
 
 def get_services(conn, transport_id):
     '''This function return services data 
@@ -204,8 +204,8 @@ def mapping(conn, transport_id, services):
         }
     '''
 
-    result = {"ts": transport_id, "services": []}
-
+    #result = {"ts": transport_id, "services": []}
+    result = []
 
     # Mapping descriptors to services
     for svc in services:
@@ -223,7 +223,15 @@ def mapping(conn, transport_id, services):
         else:
             descriptors = []
 
-        result["services"].append(
+        # result["services"].append(
+        #     {
+        #         "id": id, 
+        #         "service_id": service_id, 
+        #         "descriptors": descriptors,
+        #         "events": events           
+        #     }
+        # )
+        result.append(
             {
                 "id": id, 
                 "service_id": service_id, 
@@ -231,17 +239,15 @@ def mapping(conn, transport_id, services):
                 "events": events           
             }
         )
-
+    
     return result
 
 
 
-def main(transport_id):
+def eit_sql_main(transport_id):
 
     conn = connect()
 
     services = get_services(conn, transport_id)
 
-    mapping(conn, transport_id, services)
-
-main(1)
+    return mapping(conn, transport_id, services)
