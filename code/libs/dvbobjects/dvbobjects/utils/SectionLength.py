@@ -21,26 +21,15 @@ bat_descriptor_for_sections = []
 nit_ts_for_sections = []
 nit_descriptor_for_sections = []
 
+# For SDT Actual sections
 sdt_act_for_sections = []
-sdt_act_descriptor_for_sections = []
 
+# For SDT Other sections
 sdt_oth_for_sections = []
-sdt_oth_descriptor_for_sections = []
 
 eit_sched_for_sections = []
 eit_act_pf_for_sections = []
 eit_oth_pf_for_sections = []
-
-services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1], [800, 1], [900, 1],
-            [110, 1], [210, 1], [310, 1], [410, 1], [510, 1], [610, 1], [710, 1], [810, 1], [910, 1],
-            [120, 1], [220, 1], [320, 1], [420, 1], [520, 1], [620, 1], [720, 1], [820, 1], [920, 1],
-            [130, 1], [230, 1], [330, 1], [430, 1], [530, 1], [630, 1], [730, 1], [830, 1], [930, 1],
-            [140, 1], [240, 1], [340, 1], [440, 1], [540, 1], [640, 1], [740, 1], [840, 1], [940, 1],
-            [150, 1], [250, 1], [350, 1], [450, 1], [550, 1], [650, 1], [750, 1], [850, 1], [950, 1],
-            [160, 1], [260, 1], [360, 1], [460, 1], [560, 1], [660, 1], [760, 1], [860, 1], [960, 1],
-            [170, 1], [270, 1], [370, 1], [470, 1], [570, 1], [670, 1], [770, 1], [870, 1], [970, 1],
-            [180, 1], [280, 1], [380, 1], [480, 1], [580, 1], [680, 1], [780, 1], [880, 1], [980, 1],
-            [190, 1], [290, 1], [390, 1], [490, 1]]
 
 
 def split_to_section(items_list, descriptors, parts=2):
@@ -93,76 +82,6 @@ def split_to_section(items_list, descriptors, parts=2):
                     pass
     return (split_items, split_descriptors)
 
-# def split_to_section_sdt(items_list, descriptors, parts=2):
-#     '''This function divide item list into 
-#     2 parts, divide this item descriptors and
-#     return.
-#     For example:
-
-#     Input item_list: 
-#         [ ts1, ts2, ts3 ]
-#     Input descriptors: 
-#         [ 
-#             [first_loop], 
-#             [second_loop-ts1, second_loop-ts2, second_loop-ts3] 
-#         ]
-    
-#     After divide it will be:
-
-#     Output split_items:
-#         [ [ ts1 ], [ ts2, ts3 ] ]
-#     Output split_descriptors: 
-#         [ 
-#             [ [first_loop], [second_loop-ts1] ], 
-#             [ [first_loop], [second_loop-ts2, second_loop-ts3] ]
-#         ]
-#     {'ts': 1, 'services': [{'id': 1, 'service_id': 300}, {'id': 2, 'service_id': 301}, {'id': 3, 'service_id': 302}, {'id': 4, 'service_id': 303}, {'id': 5, 'service_id': 304}, {'id': 6, 'service_id': 305}, {'id': 7, 'service_id': 306}, {'id': 8, 'service_id': 307}, {'id': 9, 'service_id': 308}, {'id': 10, 'service_id': 309}, {'id': 11, 'service_id': 310}, {'id': 12, 'service_id': 311}, {'id': 13, 'service_id': 312}, {'id': 14, 'service_id': 313}, {'id': 15, 'service_id': 314}, {'id': 16, 'service_id': 315}, {'id': 17, 'service_id': 316}, {'id': 18, 'service_id': 317}, {'id': 19, 'service_id': 318}, {'id': 20, 'service_id': 319}, {'id': 21, 'service_id': 320}, {'id': 22, 'service_id': 321}, {'id': 23, 'service_id': 322}, {'id': 24, 'service_id': 323}, {'id': 25, 'service_id': 324}, {'id': 26, 'service_id': 325}, {'id': 27, 'service_id': 326}, {'id': 28, 'service_id': 327}, {'id': 29, 'service_id': 328}, {'id': 30, 'service_id': 329}]}
-#     '''
-#     #print (descriptors)
-#     split_descriptors = []
-#     #print (descriptors)
-
-#     sdt_loop_descriptors = descriptors[0]
-
-#     #print (items_list)
-
-#     length = len(items_list)
-
-#     split_items = [ items_list[i*length // parts: (i+1)*length // parts] for i in range(parts) ]
-#     #print (split_items)
-#     # Create empty lists in split_descritors list = count of sections 
-#     for i in range(len(split_items)):
-#         split_descriptors.append([])
-
-#     for index, chunk in enumerate(split_items):
-#         for item in chunk:
-#             #print (item)
-#             for descriptor in sdt_loop_descriptors["descriptors"]:
-#                 descriptor_name = get_dict_key(descriptor[0])
-#                 if descriptor[0][descriptor_name]["service"] == item["id"]:
-#                     split_descriptors[index].append(descriptor)
-#                 else:
-#                     pass
-#     new_split_items = []
-#     new_split_descriptors = []
-#     # for i in range(len(split_items)):
-#     #     new_split_items.append({"ts": 1, "services": []})
-
-#     for index, i in enumerate(split_items):
-#         new_split_items.insert(index, [{"ts": 1, "services": []}])
-#         for j in i:
-#             new_split_items[index][0]["services"].append(j)
-
-#     for index, i in enumerate(split_descriptors):
-#         new_split_descriptors.insert(index, [{"ts": 1, "descriptors": []}])
-#         for j in i:
-#             new_split_descriptors[index][0]["descriptors"].append(j)
-
-
-#     # print (new_split_items)
-
-#     return (new_split_items, new_split_descriptors)
-
 
 def split_to_section_sdt(items_list, parts=2):
     '''This function divide item list into 
@@ -189,42 +108,16 @@ def split_to_section_sdt(items_list, parts=2):
         ]
     {'ts': 1, 'services': [{'id': 1, 'service_id': 300}, {'id': 2, 'service_id': 301}, {'id': 3, 'service_id': 302}, {'id': 4, 'service_id': 303}, {'id': 5, 'service_id': 304}, {'id': 6, 'service_id': 305}, {'id': 7, 'service_id': 306}, {'id': 8, 'service_id': 307}, {'id': 9, 'service_id': 308}, {'id': 10, 'service_id': 309}, {'id': 11, 'service_id': 310}, {'id': 12, 'service_id': 311}, {'id': 13, 'service_id': 312}, {'id': 14, 'service_id': 313}, {'id': 15, 'service_id': 314}, {'id': 16, 'service_id': 315}, {'id': 17, 'service_id': 316}, {'id': 18, 'service_id': 317}, {'id': 19, 'service_id': 318}, {'id': 20, 'service_id': 319}, {'id': 21, 'service_id': 320}, {'id': 22, 'service_id': 321}, {'id': 23, 'service_id': 322}, {'id': 24, 'service_id': 323}, {'id': 25, 'service_id': 324}, {'id': 26, 'service_id': 325}, {'id': 27, 'service_id': 326}, {'id': 28, 'service_id': 327}, {'id': 29, 'service_id': 328}, {'id': 30, 'service_id': 329}]}
     '''
-    print (len(items_list))
+
     length = len(items_list)
     result = []
     split_items = [ items_list[i*length // parts: (i+1)*length // parts] for i in range(parts) ]
-    #print (split_items)
-    # Create empty lists in split_descritors list = count of sections 
-    # for i in range(len(split_items)):
-    #     split_descriptors.append([])
-
-    # for index, chunk in enumerate(split_items):
-    #     for item in chunk:
-    #         #print (item)
-    #         for descriptor in sdt_loop_descriptors["descriptors"]:
-    #             descriptor_name = get_dict_key(descriptor[0])
-    #             if descriptor[0][descriptor_name]["service"] == item["id"]:
-    #                 split_descriptors[index].append(descriptor)
-    #             else:
-    #                 pass
-    # new_split_items = []
-    # new_split_descriptors = []
-    # for i in range(len(split_items)):
-    #     new_split_items.append({"ts": 1, "services": []})
 
     for index, i in enumerate(split_items):
         result.insert(index, [{"ts": 1, "services": []}])
         for j in i:
             result[index][0]["services"].append(j)
 
-    # for index, i in enumerate(split_descriptors):
-    #     new_split_descriptors.insert(index, [{"ts": 1, "descriptors": []}])
-    #     for j in i:
-    #         new_split_descriptors[index][0]["descriptors"].append(j)
-
-
-    # # print (new_split_items)
-    #   print (result)
     return result
 
 
@@ -360,67 +253,9 @@ def nit_loops(transports_list, *args, **kwargs):
             transport_stream_loop)
 
 
-# def sdt_loops(transport, *args, **kwargs):
-
-#     sdt_descriptor_loop = []
-
-#     sdt_loop_descriptors = kwargs["descriptors"]
-
-#     service_descriptor_loop = []
-
-#     service_loop = []
-
-#     transport = transport[0]
-#     descriptors = sdt_loop_descriptors[0]
-
-#     for service in transport["services"]:
-
-#         service_descriptor_loop = []
-#         active_descriptors = []
-
-#         for descriptor in descriptors["descriptors"]:
-
-#             for des in descriptor:
-
-#                 if service_descriptor_func(des) != None:
-#                     if des["service_descriptor"]["service"] == service["id"]:
-#                         service_descriptor_loop.append(service_descriptor_func(des))
-#                         active_descriptors.append("service_descriptor")
-#                     else:
-#                         pass
-#                 elif private_data_specifier_descriptor_func(des, "first") != None:
-#                     if des["private_data_specifier_descriptor"]["service"] == service["id"]:
-#                         service_descriptor_loop.append(private_data_specifier_descriptor_func(des, "first"))
-#                         active_descriptors.append("private_data_specifier_descriptor")
-#                     else:
-#                         pass
-#                 else:
-#                     pass       
-
-#         service_loop.append(
-#             service_loop_item(
-#                 service_ID = service["service_id"],
-#                 EIT_schedule_flag = 0, 
-#                 EIT_present_following_flag = 0, 
-#                 running_status = 4,
-#                 free_CA_mode = 0,       
-#                 service_descriptor_loop = service_descriptor_loop
-#             )
-#         )
-
-#     return sec_len(service_loop), service_loop
-
 def sdt_loops(transport, *args, **kwargs):
 
-    sdt_descriptor_loop = []
-
-    service_descriptor_loop = []
-
     service_loop = []
-
-    # print ("\n")
-    # print ("############################################################")
-    # print (transport)
 
     transport = transport[0]
 
@@ -450,6 +285,7 @@ def sdt_loops(transport, *args, **kwargs):
         )
 
     return sec_len(service_loop), service_loop
+
 
 def eit_loops(events_list):
 
@@ -577,62 +413,6 @@ def check_length(item_length, items_list, table, *args, **kwargs):
     return (ts_section_list, descriptor_section_list)
 
 
-# def check_length_sdt(item_length, items_list, transport_id, table, *args, **kwargs):
-#     '''This function check length of second loop for all
-#     transports in this loop. If length of loop > 1024 - 3,
-#     then it's divides trasnport list to multiple list, like 1/2
-#     using "split_to_section" function for it.
-#     And agian check this transport lists. Until the length 
-#     is not consistent with the standard.
-#     Finally return list with sections of table with
-#     standard length'''
-#     #print (kwargs["descriptors"])
-#     section_max_size = 1024 # Standard maximum length of DVB Table section, except EIT
-
-#     if table == "SDT Actual":
-#         ts_section_list = sdt_act_for_sections
-#         descriptor_section_list = sdt_act_descriptor_for_sections
-#     elif table == "SDT Other":
-#         ts_section_list = sdt_oth_for_sections
-#         descriptor_section_list = sdt_oth_descriptor_for_sections
-#     else:
-#         pass
-
-#     if 0 <= (item_length + 13) <= (section_max_size - 3):
-#         ts_section_list.append(items_list)
-#         descriptor_section_list.append(kwargs["descriptors"])
-#         # print("\n")
-#         # print("*FINAL*FINAL*FINAL**FINAL**FINAL**FINAL**FINAL**FINAL*")
-#         # print (bat_descriptor_for_sections)
-#         # print("*FINAL*FINAL*FINAL**FINAL**FINAL**FINAL**FINAL**FINAL*")
-#         # print("\n")
-#     else:
-#         get_sections = split_to_section_sdt(items_list[0]["services"], kwargs["descriptors"])
-#         sections = get_sections[0]
-#         sections_descriptors = get_sections[1]
-
-#         for sec, sec_des in zip(sections, sections_descriptors):
-#             #print (sec)
-#             if table == "SDT Actual":
-#                 check_length_sdt(
-#                     sdt_loops(
-#                         sec,
-#                         descriptors = sec_des)[0],
-#                     sec,
-#                     transport_id,
-#                     table, 
-#                     descriptors = sec_des) # Recursion
-#             elif table == "SDT Other":
-#                 check_length_sdt(
-#                     sdt_loops(
-#                         sec,
-#                         descriptors = sec_des)[0], 
-#                     sec, 
-#                     table,
-#                     descriptors = sec_des) # Recursion
-#     return (ts_section_list, descriptor_section_list)
-
-
 def check_length_sdt(item_length, items_list, transport_id, table, *args, **kwargs):
     '''This function check length of second loop for all
     transports in this loop. If length of loop > 1024 - 3,
@@ -642,7 +422,7 @@ def check_length_sdt(item_length, items_list, transport_id, table, *args, **kwar
     is not consistent with the standard.
     Finally return list with sections of table with
     standard length'''
-    #print (kwargs["descriptors"])
+
     section_max_size = 1024 # Standard maximum length of DVB Table section, except EIT
 
     if table == "SDT Actual":
@@ -650,7 +430,7 @@ def check_length_sdt(item_length, items_list, transport_id, table, *args, **kwar
     elif table == "SDT Other":
         ts_section_list = sdt_oth_for_sections
     else:
-        pass
+        print ("Error! Please use correct DVB Table name")
 
     if 0 <= (item_length + 13) <= (section_max_size - 3):
         ts_section_list.append(items_list)
@@ -667,12 +447,14 @@ def check_length_sdt(item_length, items_list, transport_id, table, *args, **kwar
             elif table == "SDT Other":
                 check_length_sdt(
                     sdt_loops(sec)[0], 
-                    sec, 
+                    sec,
+                    transport_id,
                     table) # Recursion
+
     return ts_section_list
 
 
-def check_eit_length(item_length, items_list, table):
+def check_length_eit(item_length, items_list, table):
     '''This function check length of EIT dexcriptors loop. 
     If length of loop > 4096 - 3,
     then it's divides trasnport list to multiple list like 1/2
@@ -681,7 +463,7 @@ def check_eit_length(item_length, items_list, table):
 
     section_max_size = 4096
 
-    if table == "EIT_Schedule":
+    if table == "EIT Schedule":
         ts_section_list = eit_sched_for_sections
     elif table == "EIT_Actual_PF":
         ts_section_list = eit_act_pf_for_sections
@@ -713,6 +495,8 @@ def null_list(dvb_table):
         bat_ts_for_sections.clear()
     elif dvb_table == "NIT": 
         nit_ts_for_sections.clear()
+    elif dvb_table == "SDT Actual": 
+        sdt_act_for_sections.clear()
     else:
         pass
 

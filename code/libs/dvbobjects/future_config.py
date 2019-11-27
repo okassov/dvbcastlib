@@ -17,6 +17,7 @@ from dateutil.rrule import *
 from dateutil.parser import *
 from SQL.BATSQL import *
 from SQL.NITSQL import *
+from SQL.EITSQLActualSchedule import *
 #from SQL.SDTSQL import *
 from SQL.SDTSQLtest import *
 from SQL.BATSQLDescriptors import *
@@ -210,55 +211,6 @@ events2 = [
 #Service Description Actual Table  (ETSI EN 300 468 5.2.3) #
 #############################################################
 
-# def SDTActual(transport, transport_id, descriptors):
-
-#     sdt_file_name = "sdt_act_" + str(transport_id) + ".sec"
-
-#     sdt_sections = []
-
-#     # Get list of svc_lists
-#     sections_ts = check_length_sdt(
-#         sdt_loops(
-#             transport, 
-#             descriptors = descriptors)[0], 
-#         transport,
-#         transport_id,
-#         "SDT Actual",
-#         descriptors = descriptors)
-
-#     # Generate SDT sections
-#     if len(sections_ts) != 0:
-
-#         for idx, (i,j) in enumerate(zip(sections_ts[0], sections_ts[1])):
-
-#             sdt = service_description_section(
-#                 transport_stream_id = transport_id,
-#                 original_network_id = 41007,
-#                 service_loop = sdt_loops(i, descriptors = j)[1], #Get loop items
-#                 version_number = 1,
-#                 section_number = idx,
-#                 last_section_number = len(sections_ts) - 1,
-#             )
-
-#             sdt_sections.append(sdt)
-
-#         # Write sections to bat.sec file
-#         with open(sdt_file_name, "wb") as DFILE:
-#             for sec in sdt_sections: 
-#                 print (sec)
-#                 DFILE.write(sec.pack())
-#     else:
-#         pass
-
-# std_acts = [{"id": 1}]
-
-# for sdt in std_acts:
-
-#     transport = sdt_sql_main(sdt["id"])
-#     descriptors = sdt_des_sql_main(sdt["id"])
-
-#     SDTActual(transport, sdt["id"], descriptors)
-
 
 def SDTActual(transport, transport_id):
 
@@ -298,90 +250,125 @@ def SDTActual(transport, transport_id):
     else:
         pass
 
-std_acts = [{"id": 1}]
+sdt_acts = [{"id": 1}]
 
-for sdt in std_acts:
+for sdt in sdt_acts:
 
     transport = sdt_sql_main(sdt["id"])
-    #descriptors = sdt_des_sql_main(sdt["id"])
+    if len(transport) != 0:
+        SDTActual(transport, sdt["id"])
 
-    SDTActual(transport, sdt["id"])
+        null_list("SDT Actual") # Null section list for next loop
+    else:
+        pass
 
-# #############################################################
-# # Service Description Other Table  (ETSI EN 300 468 5.2.3)  #
-# #############################################################
+#############################################################
+# Service Description Other Table  (ETSI EN 300 468 5.2.3)  #
+#############################################################
 
-# sdt_oth_sections = []
+def SDTOther(transport, transport_id):
 
-# # Get list of svc_lists
-# sections_ts = check_length(sdt_loops(services)[0], services, "SDT Other")
+    sdt_file_name = "sdt_oth_" + str(transport_id) + ".sec"
 
-# # Generate SDT sections
-# if len(sections_ts) != 0:
-
-#     for idx, i in enumerate(sections_ts):
-
-#         sdt = service_description_other_ts_section(
-#             transport_stream_id = 1,
-#             original_network_id = 41007,
-#             service_loop = sdt_loops(i)[1], #Get loop items
-#             version_number = 1,
-#             section_number = idx,
-#             last_section_number = len(sections_ts) - 1,
-#         )
-
-#         sdt_oth_sections.append(sdt)
-
-#     # Write sections to bat.sec file
-#     with open("./sdt_oth.sec", "wb") as DFILE:
-#         for sec in sdt_oth_sections: 
-#             print (sec)
-#             DFILE.write(sec.pack())
-# else:
-#     pass
+    sdt_oth_sections = []
 
 
-# ###############################################
-# # EIT Actual Schedule (ETSI EN 300 468 5.2.4) #
-# ###############################################
+    # Get list of svc_lists
+    sections_ts = check_length_sdt(
+        sdt_loops(transport)[0], 
+        transport,
+        transport_id,
+        "SDT Other")
 
-# eit_schedule_sections = []
+    # Generate SDT sections
+    if len(sections_ts) != 0:
 
-# sections_ts = check_eit_length(eit_loops(events)[0], events, "EIT_Schedule")
+        for idx, i in enumerate(sections_ts):
 
-# if len(services2) != 0:
+            sdt = service_description_other_ts_section(
+                transport_stream_id = transport_id,
+                original_network_id = 41007,
+                service_loop = sdt_loops(i)[1], #Get loop items
+                version_number = 1,
+                section_number = idx,
+                last_section_number = len(sections_ts) - 1,
+            )
 
-#     for i in services2:
+            sdt_oth_sections.append(sdt)
 
-#         if len(sections_ts) != 0:   
+        # Write sections to bat.sec file
+        with open(sdt_file_name, "wb") as DFILE:
+            for sec in sdt_oth_sections: 
+                print (sec)
+                DFILE.write(sec.pack())
+    else:
+        pass
 
-#             for idx, j in enumerate(sections_ts):
+sdt_oth = [{"id": 1}, {"id": 2}]
 
-#                 eit_schedule = event_information_section(
-#                     table_id = EIT_ACTUAL_TS_SCHEDULE14,
-#                     service_id = i,
-#                     transport_stream_id = 1,
-#                     original_network_id = 41007,
-#                     event_loop = eit_loops(j)[1], #Get loop items
-#                     segment_last_section_number = 1,
-#                     version_number = 1, 
-#                     section_number = idx,
-#                     last_section_number = len(sections_ts) - 1, 
-#                 )
+for sdt in sdt_oth:
 
-#                 eit_schedule_sections.append(eit_schedule)
+    transport = sdt_sql_main(sdt["id"])
+    if len(transport) != 0:
+        SDTOther(transport, sdt["id"])
 
-#             # Write sections to bat.sec file
-#             with open("./eit_sch.sec", "wb") as DFILE:
-#                 for sec in eit_schedule_sections: 
-#                     print (sec)
-#                     DFILE.write(sec.pack())
-#         else:
-#             pass
-# else:
-#     pass
+        null_list("SDT Actual") # Null section list for next loop
+    else:
+        pass
 
+###############################################
+# EIT Actual Schedule (ETSI EN 300 468 5.2.4) #
+###############################################
 
+def EITActualSchedule(transport, transport_id):
+
+    sdt_file_name = "eit_act_sch_" + str(transport_id) + ".sec"
+
+    eit_schedule_sections = []
+
+    sections_ts = check_length_eit(eit_loops(transport)[0], transport, "EIT Schedule")
+
+    print (transport)
+
+    transport = transport[0]
+
+    for i in transport["services"]:
+
+        if len(sections_ts) != 0:  
+
+            for idx, j in enumerate(sections_ts):
+                eit_schedule = event_information_section(
+                    table_id = EIT_ACTUAL_TS_SCHEDULE14,
+                    service_id = i,
+                    transport_stream_id = 1,
+                    original_network_id = 41007,
+                    event_loop = eit_loops(j)[1], #Get loop items
+                    segment_last_section_number = 1,
+                    version_number = 1, 
+                    section_number = idx,
+                    last_section_number = len(sections_ts) - 1, 
+                )
+                eit_schedule_sections.append(eit_schedule)
+
+            # Write sections to bat.sec file
+            with open("./eit_sch.sec", "wb") as DFILE:
+                for sec in eit_schedule_sections: 
+                    print (sec)
+                    DFILE.write(sec.pack())
+        else:
+            pass
+    else:
+        pass
+
+eit_act_sch = [{"id": 1}, {"id": 2}]
+
+for eit in eit_act_sch:
+    transport = eit_sql_main(eit["id"])
+    if len(transport) != 0:
+        EITActualSchedule(transport, eit["id"])
+        null_list("EIT Schedule") # Null section list for next loop
+    else:
+        pass
 # # ########################################################
 # # # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
 # # ########################################################
