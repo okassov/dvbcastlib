@@ -1,15 +1,6 @@
-import psycopg2
-from .db_connect import connect
 
-def main():
-    conn = connect()
+asd = ["a", "b", "c", "d", "e", "b", "t"]
 
-    cur = conn.cursor()
+a = [asd[i:i+2] for i in range(0,len(asd),2)]
 
-    cur.execute("SELECT * FROM service_list_descriptor;")
-
-    result = cur.fetchall()
-
-    print (result)
-
-main()
+print (a)

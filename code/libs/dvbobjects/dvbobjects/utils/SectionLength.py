@@ -126,9 +126,9 @@ def event_chunks_list(alist, parts=2):
     '''This function divide EIT event list into 
     chunks lists with len == 2'''
 
-    length = len(alist)
+    chunks = [alist[i:i+parts] for i in range(0,len(alist),parts)]
 
-    return [ alist[i:i+parts] for i in range(0, len(alist), parts)]
+    return chunks
 
 
 def sec_len(first_loop, second_loop = []):
@@ -288,7 +288,7 @@ def sdt_loops(transport, *args, **kwargs):
     return sec_len(service_loop), service_loop
 
 
-def EIT_loops(events, descriptors):
+def EIT_loops(events, descriptors, table):
     '''This function create EIT loop. Get events
     and descriptors of service as args. Return list
     with EIT sections.
@@ -311,20 +311,19 @@ def EIT_loops(events, descriptors):
 
     if "first_event" in events:
         key = "first_event"
-    else:
+    elif "second_event" in events:
         key = "second_event"
+    else:
+        pass
 
     # Add descriptors to loop
     for descriptor in descriptors:
         if component_descriptor_func(descriptor) != None:
             event_descriptor_loop.append(component_descriptor_func(descriptor))
-            print ("component")
         elif ca_identifier_descriptor_func(descriptor) != None:
             event_descriptor_loop.append(ca_identifier_descriptor_func(descriptor))
-            print ("ca")
         elif parental_rating_descriptor_func(descriptor) != None:
             event_descriptor_loop.append(parental_rating_descriptor_func(descriptor))
-            print ("parental")
         else:
             pass  
 
@@ -332,31 +331,47 @@ def EIT_loops(events, descriptors):
     for event_descriptor in events["descriptors"]:
         if short_event_descriptor_func(event_descriptor) != None:
             event_descriptor_loop.append(short_event_descriptor_func(event_descriptor))   
-            print ("short")  
         elif extended_event_descriptor_func(event_descriptor) != None:
             event_descriptor_loop.append(extended_event_descriptor_func(event_descriptor))
-            print ("extended")
         else:
             pass
 
-    el = event_loop = [
-        event_loop_item(
-            event_id = events[key][0],
-            start_year = events[key][1] - 1900, # since 1900
-            start_month = events[key][2], 
-            start_day = events[key][3],
-            start_hours = events[key][4],
-            start_minutes = events[key][5],
-            start_seconds = events[key][6], 
-            duration_hours = events[key][7], 
-            duration_minutes = events[key][8],
-            duration_seconds = events[key][9], 
-            running_status = 4, # 4 service is running, 1 not running, 2 starts in a few seconds, 3 pausing
-            free_CA_mode = 0, # 0 means service is not scrambled, 1 means at least a stream is scrambled
-            event_descriptor_loop = event_descriptor_loop
-        )
-    ]
-
+    if table == "EIT Actual PF":
+        el = event_loop = [
+            event_loop_item(
+                event_id = events[key][0],
+                start_year = events[key][1] - 1900, # since 1900
+                start_month = events[key][2], 
+                start_day = events[key][3],
+                start_hours = events[key][4],
+                start_minutes = events[key][5],
+                start_seconds = events[key][6], 
+                duration_hours = events[key][7], 
+                duration_minutes = events[key][8],
+                duration_seconds = events[key][9], 
+                running_status = 4, # 4 service is running, 1 not running, 2 starts in a few seconds, 3 pausing
+                free_CA_mode = 0, # 0 means service is not scrambled, 1 means at least a stream is scrambled
+                event_descriptor_loop = event_descriptor_loop
+            )
+        ]
+    elif table == "EIT Actual Schedule":
+        el = event_loop = [
+            event_loop_item(
+                event_id = events["event"][0],
+                start_year = events["event"][1] - 1900, # since 1900
+                start_month = events["event"][2], 
+                start_day = events["event"][3],
+                start_hours = events["event"][4],
+                start_minutes = events["event"][5],
+                start_seconds = events["event"][6], 
+                duration_hours = events["event"][7], 
+                duration_minutes = events["event"][8],
+                duration_seconds = events["event"][9], 
+                running_status = 4, # 4 service is running, 1 not running, 2 starts in a few seconds, 3 pausing
+                free_CA_mode = 0, # 0 means service is not scrambled, 1 means at least a stream is scrambled
+                event_descriptor_loop = event_descriptor_loop
+            )
+        ]
     return el
 
 
@@ -469,7 +484,7 @@ def check_length_sdt(item_length, items_list, transport_id, table, *args, **kwar
     return ts_section_list
 
 
-def check_length_eit(item_length, items_list, table):
+def check_length_eit(items_list, table):
     '''This function check length of EIT dexcriptors loop. 
     If length of loop > 4096 - 3,
     then it's divides trasnport list to multiple list like 1/2
@@ -478,7 +493,7 @@ def check_length_eit(item_length, items_list, table):
 
     section_max_size = 4096
 
-    if table == "EIT Schedule":
+    if table == "EIT Actual Schedule":
         ts_section_list = eit_sched_for_sections
     elif table == "EIT_Actual_PF":
         ts_section_list = eit_act_pf_for_sections
@@ -489,8 +504,10 @@ def check_length_eit(item_length, items_list, table):
 
     section = event_chunks_list(items_list)
 
+    print (section)
+
     for i in section:
-        if table == "EIT_Schedule":
+        if table == "EIT Actual Schedule":
             ts_section_list.append(i)
         elif table == "EIT_Actual_PF":
             ts_section_list.append(i)

@@ -1,6 +1,6 @@
 import psycopg2
 import datetime
-from db_connect import connect
+from .db_connect import connect
 
 def get_services(conn, transport_id):
     '''This function return services data 
@@ -103,32 +103,6 @@ def get_descriptor_data(conn, descriptor_name, transport_id, service_id, dvb_tab
         cur.close()
 
 
-def get_actual_event(events, now_date, is_first=True, **kwargs):
-
-    result = []
-
-    if is_first:
-        # Find first actual event
-        for event in events:
-            if event[4] <= now_date[3] <= event[4] + event[7]: # Доработать!!!!!!!!!!!!!!!
-                result = list(event)
-            else:
-                pass
-        return result
-
-    elif is_first == False and kwargs:
-        # Find second actual event        
-        first_event_id = kwargs["first_event_id"]
-        for event in events:
-            if event[0] == first_event_id + 1:
-                result = list(event)
-            else:
-                pass
-        return result
-    else:
-        pass
-
-
 def get_events(conn, transport_id, service_id):
     ''''''
 
@@ -138,30 +112,29 @@ def get_events(conn, transport_id, service_id):
     # print (date)
     now_date = (2019, 11, 24, 9, 0, 0)
 
+    start_year = now_date[0]
+    start_month = now_date[1]
+    start_day = now_date[2]
+
     actual_schedule_events = []
 
     event_descriptors = get_descriptors(conn, transport_id, service_id, True) # Get active event descriptors
 
     try:
-        cur.execute("SELECT * FROM event \
-            WHERE transport=%s and service=%s" % (transport_id, service_id))
+        cur.execute("SELECT * FROM event WHERE start_year=%s and start_month=%s and \
+            start_day=%s and transport=%s and service=%s" % (start_year, 
+                                                            start_month, 
+                                                            start_day, 
+                                                            transport_id, 
+                                                            service_id))
         events = cur.fetchall()
 
         if events != None and len(events) != 0:
 
-            # Get first actual event with event descriptors
-            first_event = get_actual_event(events, now_date, True)
-            if first_event != None and len(first_event) != 0:
-                first_event_id = first_event[0]
-                descriptors = [ get_descriptor_data(conn, i[0], transport_id, service_id, "EIT", event_id = first_event_id) for i in event_descriptors ]
-                actual_schedule_events.append({"first_event": first_event, "descriptors": descriptors})
-                
-                # Get second actual event with event descriptors        
-                second_event = get_actual_event(events, now_date, False, first_event_id = first_event_id)
-                if second_event != None and len(second_event) != 0:
-                    second_event_id = second_event[0]
-                    descriptors = [ get_descriptor_data(conn, i[0], transport_id, service_id, "EIT", event_id = second_event_id) for i in event_descriptors ]
-                    actual_schedule_events.append({"second_event": second_event, "descriptors": descriptors})
+            for event in events:
+
+                descriptors = [ get_descriptor_data(conn, i[0], transport_id, service_id, "EIT", event_id = event[0]) for i in event_descriptors ]
+                actual_schedule_events.append({"event": event, "descriptors": descriptors})
 
             else:
                 pass
@@ -204,7 +177,6 @@ def mapping(conn, transport_id, services):
         }
     '''
 
-    #result = {"ts": transport_id, "services": []}
     result = []
 
     # Mapping descriptors to services
@@ -223,14 +195,6 @@ def mapping(conn, transport_id, services):
         else:
             descriptors = []
 
-        # result["services"].append(
-        #     {
-        #         "id": id, 
-        #         "service_id": service_id, 
-        #         "descriptors": descriptors,
-        #         "events": events           
-        #     }
-        # )
         result.append(
             {
                 "id": id, 
@@ -239,15 +203,15 @@ def mapping(conn, transport_id, services):
                 "events": events           
             }
         )
-    
+
     return result
 
 
 
-def eit_sql_main(transport_id):
+def eit_sch_sql_main(transport_id):
 
     conn = connect()
 
     services = get_services(conn, transport_id)
 
-    mapping(conn, transport_id, services)
+    return mapping(conn, transport_id, services)
