@@ -186,7 +186,7 @@ def mapping(conn, transport_id, services):
         service_id = svc[1]
 
         events = get_events(conn, transport_id, id) # Get events
-        
+        #print (events)
         descriptors = get_descriptors(conn, transport_id, id) # Get active descriptors
 
         # Check descriptors
@@ -203,7 +203,7 @@ def mapping(conn, transport_id, services):
                 "events": events           
             }
         )
-
+    #print (result)
     return result
 
 

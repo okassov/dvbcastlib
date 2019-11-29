@@ -37,7 +37,7 @@ def component_descriptor_func(items):
                 )
         else:
             result = None
-
+        #print (result)
         return result
     else:
         pass
@@ -72,7 +72,7 @@ def ca_identifier_descriptor_func(items):
             )
         else:
             result = None
-
+        #print (result)
         return result
     else:
         pass
@@ -104,7 +104,7 @@ def parental_rating_descriptor_func(items):
                 )
         else:
             result = None
-
+        #print (result)
         return result
     else:
         pass
@@ -176,7 +176,7 @@ def extended_event_descriptor_func(items):
                 )
         else:
             result = None
-
+        print (result)
         return result
     else:
         pass

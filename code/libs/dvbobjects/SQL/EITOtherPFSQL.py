@@ -1,6 +1,6 @@
 import psycopg2
 import datetime
-from .db_connect import connect
+from db_connect import connect
 
 def get_services(conn, transport_id):
     '''This function return services data 
@@ -239,12 +239,14 @@ def mapping(conn, transport_id, services):
                 "events": events           
             }
         )
-    
+
+    result = {"ts": transport_id, "services": result} # Add for other because need key "ts"
+
     return result
 
 
 
-def eit_sql_main(transport_id):
+def eit_oth_pf_sql_main(transport_id):
 
     conn = connect()
 

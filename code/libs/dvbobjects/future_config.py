@@ -338,7 +338,7 @@ def EITActualPF(services, transport_id):
                     service_id = i["id"],
                     transport_stream_id = transport_id,
                     original_network_id = 41007,
-                    event_loop = EIT_loops(j, i["descriptors"], "EIT Actual PF"), #Get loop items
+                    event_loop = eit_loops([j], i["descriptors"]), #Get loop items
                     segment_last_section_number = len(i["events"]) - 1,
                     version_number = 1, 
                     section_number = idx,
@@ -348,23 +348,24 @@ def EITActualPF(services, transport_id):
             # Write sections to eit.sec file
             with open(eit_file_name, "wb") as DFILE:
                 for sec in eit_actual_pf_sections: 
-                    print (sec)
+                    #print (sec)
                     DFILE.write(sec.pack())
+                    DFILE.flush()
         else:
             pass
     else:
         pass
 
-eit_act_pf = [{"id": 1}, {"id": 2}]
+# eit_act_pf = [{"id": 1}, {"id": 2}]
 
-for eit in eit_act_pf:
-    services = eit_sql_main(eit["id"])
+# for eit in eit_act_pf:
+#     services = eit_sql_main(eit["id"])
 
-    if len(services) != 0:
-        EITActualPF(services, eit["id"])
-        null_list("EIT Actual PF") # Null section list for next loop
-    else:
-        pass
+#     if len(services) != 0:
+#         EITActualPF(services, eit["id"])
+#         null_list("EIT Actual PF") # Null section list for next loop
+#     else:
+#         pass
 
 # # ########################################################
 # # # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
@@ -380,43 +381,48 @@ def EITActualSchedule(services, transport_id):
     
     for svc in services:
         chunks = event_chunks_list(svc["events"])
-        print ("###################################################")
+
         for i in chunks:
+
+            temp_chunk = []
             
             for j in i:
+                temp_chunk.append(j)
+            sections_ts.append(
+                {
+                    "id": svc["id"], 
+                    "service_id": svc["service_id"], 
+                    "descriptors": svc["descriptors"], 
+                    "events": [i for i in temp_chunk]
+                }
+            )
 
-                sections_ts.append(
-                    {
-                        "id": svc["id"], 
-                        "service_id": svc["service_id"], 
-                        "descriptors": svc["descriptors"], 
-                        "events": j
-                    }
-                )
                 #print ("APPEND ==========>" + str(svc["service_id"]) )
-
+    print (len(sections_ts))
     if len(sections_ts) != 0:
 
-        for idx, i in enumerate(sections_ts):
+        for idx, j in enumerate(sections_ts):
 
             eit_actual_schedule = event_information_section(
                 table_id = EIT_ACTUAL_TS_SCHEDULE14,
                 service_id = i["service_id"],
                 transport_stream_id = transport_id,
                 original_network_id = 41007,
-                event_loop = EIT_loops(i["events"], i["descriptors"], "EIT Actual Schedule"), #Get loop items
+                event_loop = eit_loops(i["events"], i["descriptors"]), #Get loop items
                 segment_last_section_number = len(sections_ts) - 1,
                 version_number = 1, 
                 section_number = idx,
                 last_section_number = len(sections_ts) - 1, 
             )
             eit_actual_schedule_sections.append(eit_actual_schedule)
-        print (len(eit_actual_schedule_sections))
-        # Write sections to eit_act_pf.sec file
+
+        #Write sections to eit_act_pf.sec file
         with open(eit_file_name, "wb") as DFILE:
             for sec in eit_actual_schedule_sections: 
-                print (sec)
+                #print (sec)
                 DFILE.write(sec.pack())
+                DFILE.flush()
+
     else:
         pass
 
@@ -427,41 +433,62 @@ for eit in eit_act_sched:
 
     if len(services) != 0:
         EITActualSchedule(services, eit["id"])
-        null_list("EIT Actual PF") # Null section list for next loop
+        #null_list("EIT Actual PF") # Null section list for next loop
     else:
         pass
 
-# #######################################################
-# # EIT Other Present/Following (ETSI EN 300 468 5.2.4) #
-# #######################################################
+#######################################################
+# EIT Other Present/Following (ETSI EN 300 468 5.2.4) #
+#######################################################
 
-# eit_other_pf_sections = []
+def eit_other_pf(transports):
 
-# sections_ts = check_eit_length(eit_loops(events2)[0], events2, "EIT_Other_PF")
+    eit_file_name = "eit_oth_pf_" + str(transport_id) + ".sec"
 
-# for idx, i in enumerate(sections_ts):
+    eit_other_pf_sections = []
 
-#     for jdx, j in enumerate(i):
+    for transport in transports:
 
-#         eit_other_pf = event_information_section(
-#             table_id = EIT_ANOTHER_TS_PRESENT_FOLLOWING,
-#             service_id = i[0]["sid"],
-#             transport_stream_id = 1,
-#             original_network_id = 41007,
-#             event_loop = eit_loops([j])[1], #Get loop items
-#             segment_last_section_number = 1,
-#             version_number = 1, 
-#             section_number = jdx,
-#             last_section_number = len(i) - 1, 
-#         )
+        for i in services:
 
-#         eit_other_pf_sections.append(eit_other_pf)
+            if len(i["events"]) != 0:
 
-# # Write sections to eit_oth_pf.sec file
-# with open("./eit_oth_pf.sec", "wb") as DFILE:
-#     for sec in eit_other_pf_sections: 
-#         print (sec)
-#         DFILE.write(sec.pack())
+            for idx, i in enumerate(sections_ts):
+
+                for jdx, j in enumerate(i):
+
+                    eit_other_pf = event_information_section(
+                        table_id = EIT_ANOTHER_TS_PRESENT_FOLLOWING,
+                        service_id = i[0]["sid"],
+                        transport_stream_id = 1,
+                        original_network_id = 41007,
+                        event_loop = eit_loops([j])[1], #Get loop items
+                        segment_last_section_number = 1,
+                        version_number = 1, 
+                        section_number = jdx,
+                        last_section_number = len(i) - 1, 
+                    )
+
+                    eit_other_pf_sections.append(eit_other_pf)
+
+    # Write sections to eit_oth_pf.sec file
+    with open("./eit_oth_pf.sec", "wb") as DFILE:
+        for sec in eit_other_pf_sections: 
+            print (sec)
+            DFILE.write(sec.pack())
+
+
+eit_oth_pf = [{"id": 1}, {"id": 2}]
+
+transports = []
+
+for eit in eit_oth_pf:
+
+    transport = eit_sql_main(eit["id"])
+
+    transports.append(transport)
+
+eit_oth_pf(transports)
 
 
 # ##############################################################################################

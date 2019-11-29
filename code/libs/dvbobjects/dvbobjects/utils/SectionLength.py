@@ -288,17 +288,58 @@ def sdt_loops(transport, *args, **kwargs):
     return sec_len(service_loop), service_loop
 
 
-def EIT_loops(events, descriptors, table):
+def event_descriptors_generator(descriptor):
+    ''' Function get descriptor and return it's
+    byte pack.
+
+    Input: {"descriptor_name": {"column1": data1, "column2": data2}}
+    
+    Output: byte pack object
+    '''
+
+    handlers = {
+        "short_event_descriptor": short_event_descriptor_func,
+        "extended_event_descriptor": extended_event_descriptor_func
+        }
+
+    descriptor_name = get_dict_key(descriptor)
+
+    if descriptor_name in handlers:
+        result = handlers[descriptor_name](descriptor)
+    else:
+        print ("Error! Unknown event descriptor")
+        result = None
+    return result
+
+
+def eit_descriptors_generator(descriptor):
+    ''''''
+
+    handlers = {
+        "component_descriptor" : component_descriptor_func,
+        "ca_identifier_descriptor": ca_identifier_descriptor_func,
+        "parental_rating_descriptor": parental_rating_descriptor_func
+    }
+
+    descriptor_name = get_dict_key(descriptor)
+
+    if descriptor_name in handlers:
+        result = handlers[descriptor_name](descriptor)
+    else:
+        print ("Error! Unknown event descriptor")
+        result = None
+    return result
+
+
+def eit_loops(events, descriptors):
     '''This function create EIT loop. Get events
     and descriptors of service as args. Return list
     with EIT sections.
 
     Input: 
     events = { 
-        "first event": [ 
-                        id, year, mon, day, hour, min, sec, dhour, dmin, 
-                        dsec, EIT, loop, network, transport, service
-                        ] 
+        "event": [ id, year, mon, day, hour, min, sec, dhour, dmin, 
+                   dsec, EIT, loop, network, transport, service ] 
         "descriptors": [{event1_descriptor}, {event1_descriptor}, ...]
         }
     descriptors = [{service1_descriptor1}, {service1_descriptor2}, ...]
@@ -306,72 +347,46 @@ def EIT_loops(events, descriptors, table):
     Output:
     el = [EIT_section1, EIT_section2, ...]
     '''
-    
     event_descriptor_loop = []
-
-    if "first_event" in events:
-        key = "first_event"
-    elif "second_event" in events:
-        key = "second_event"
-    else:
-        pass
-
-    # Add descriptors to loop
+    #print (events)
+    # Add EIT descriptors to loop
     for descriptor in descriptors:
-        if component_descriptor_func(descriptor) != None:
-            event_descriptor_loop.append(component_descriptor_func(descriptor))
-        elif ca_identifier_descriptor_func(descriptor) != None:
-            event_descriptor_loop.append(ca_identifier_descriptor_func(descriptor))
-        elif parental_rating_descriptor_func(descriptor) != None:
-            event_descriptor_loop.append(parental_rating_descriptor_func(descriptor))
+        descriptor_pack = eit_descriptors_generator(descriptor)
+        if descriptor_pack != None:
+            event_descriptor_loop.append(descriptor_pack)
         else:
-            pass  
-
-    # Add event descriptors to loop
-    for event_descriptor in events["descriptors"]:
-        if short_event_descriptor_func(event_descriptor) != None:
-            event_descriptor_loop.append(short_event_descriptor_func(event_descriptor))   
-        elif extended_event_descriptor_func(event_descriptor) != None:
-            event_descriptor_loop.append(extended_event_descriptor_func(event_descriptor))
-        else:
+            #print (descriptor_pack)
+            print ("Return None")
             pass
 
-    if table == "EIT Actual PF":
-        el = event_loop = [
-            event_loop_item(
-                event_id = events[key][0],
-                start_year = events[key][1] - 1900, # since 1900
-                start_month = events[key][2], 
-                start_day = events[key][3],
-                start_hours = events[key][4],
-                start_minutes = events[key][5],
-                start_seconds = events[key][6], 
-                duration_hours = events[key][7], 
-                duration_minutes = events[key][8],
-                duration_seconds = events[key][9], 
-                running_status = 4, # 4 service is running, 1 not running, 2 starts in a few seconds, 3 pausing
-                free_CA_mode = 0, # 0 means service is not scrambled, 1 means at least a stream is scrambled
-                event_descriptor_loop = event_descriptor_loop
-            )
-        ]
-    elif table == "EIT Actual Schedule":
-        el = event_loop = [
-            event_loop_item(
-                event_id = events["event"][0],
-                start_year = events["event"][1] - 1900, # since 1900
-                start_month = events["event"][2], 
-                start_day = events["event"][3],
-                start_hours = events["event"][4],
-                start_minutes = events["event"][5],
-                start_seconds = events["event"][6], 
-                duration_hours = events["event"][7], 
-                duration_minutes = events["event"][8],
-                duration_seconds = events["event"][9], 
-                running_status = 4, # 4 service is running, 1 not running, 2 starts in a few seconds, 3 pausing
-                free_CA_mode = 0, # 0 means service is not scrambled, 1 means at least a stream is scrambled
-                event_descriptor_loop = event_descriptor_loop
-            )
-        ]
+    # Add event descriptors to loop
+    for event in events:
+        for event_descriptor in event["descriptors"]:
+            descriptor_pack = event_descriptors_generator(event_descriptor)
+            if descriptor_pack != None:
+                event_descriptor_loop.append(descriptor_pack)
+            else:
+                pass
+                
+    print (len(event_descriptor_loop))
+    el = event_loop = [
+        event_loop_item(
+            event_id = i["event"][0],
+            start_year = i["event"][1] - 1900, # since 1900
+            start_month = i["event"][2], 
+            start_day = i["event"][3],
+            start_hours = i["event"][4],
+            start_minutes = i["event"][5],
+            start_seconds = i["event"][6], 
+            duration_hours = i["event"][7], 
+            duration_minutes = i["event"][8],
+            duration_seconds = i["event"][9], 
+            running_status = 4, 
+            free_CA_mode = 0,
+            event_descriptor_loop = event_descriptor_loop
+        ) for i in events
+    ]
+    print (el)
     return el
 
 
