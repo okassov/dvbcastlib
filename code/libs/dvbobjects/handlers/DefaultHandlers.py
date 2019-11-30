@@ -48,3 +48,51 @@ def private_data_specifier_descriptor_func(items, loop):
                 return result
             else:
                 pass
+
+def private_data_specifier_descriptor_func_2(items):
+    '''This function get dict as arg.
+    Input dict format ===>
+    {
+        "ts": id,
+        "descriptors:
+            [ 
+                {
+                    "descriptor1_name": 
+                        {
+                        "descirptor1_value1": descriptor_data1,
+                        "descirptor1_value2": descriptor_data2,
+                        "descirptor1_value3": descriptor_data3,
+                        ...
+                        },
+                },
+                {
+                    "descriptor2_name": 
+                        {
+                        "descirptor2_value1": descriptor_data1,
+                        "descirptor2_value2": descriptor_data2,
+                        "descirptor2_value3": descriptor_data3,
+                        ...
+                        },
+                },
+                ...  
+            ]
+    }
+    Return out of service_list_descriptor
+    '''
+
+    if get_dict_key(items) == "private_data_specifier_descriptor":
+
+        if len(items["private_data_specifier_descriptor"]) != 0:
+
+            body = items["private_data_specifier_descriptor"]
+
+            result = private_data_specifier_descriptor(
+                    private_data_specifier = body["private_data_specifier"],
+                )
+
+        else:
+            result = None
+
+        return result
+    else:
+        pass

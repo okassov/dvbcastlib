@@ -114,12 +114,12 @@ def split_to_section_sdt(items_list, parts=2):
     result = []
     split_items = [ items_list[i*length // parts: (i+1)*length // parts] for i in range(parts) ]
 
-    for index, i in enumerate(split_items):
-        result.insert(index, [{"ts": 1, "services": []}])
-        for j in i:
-            result[index][0]["services"].append(j)
-
-    return result
+    # for index, i in enumerate(split_items):
+    #     result.insert(index, [{"ts": 1, "services": []}])
+    #     for j in i:
+    #         result[index][0]["services"].append(j)
+    # print(len(result))
+    return split_items
 
 
 def event_chunks_list(alist, parts=2):
@@ -127,7 +127,6 @@ def event_chunks_list(alist, parts=2):
     chunks lists with len == 2'''
 
     chunks = [alist[i:i+parts] for i in range(0,len(alist),parts)]
-
     return chunks
 
 
@@ -161,6 +160,9 @@ def sec_len(first_loop, second_loop = []):
 
         print ("Calculated length ===> " + str(len(fl_bytes)))
         return len(fl_bytes)
+
+def default_descriptors_generator(descriptor):
+    print (descriptor)
 
 
 def bat_loops(transports_list, *args, **kwargs):
@@ -207,45 +209,106 @@ def bat_loops(transports_list, *args, **kwargs):
             bouquet_descriptor_loop, transport_stream_loop)
 
 
-def nit_loops(transports_list, *args, **kwargs):
+# def nit_loops(transports_list, *args, **kwargs):
+#     '''Function get 2 list args with transports,
+#     and return length of loops'''
+
+#     network_descriptor_loop = []
+#     transport_stream_loop = []
+
+#     first_loop_descriptors = kwargs["descriptors"][0]
+#     second_loop_descriptors = kwargs["descriptors"][1]
+#     network_id = kwargs["network_id"]
+
+#     # Generate first_loop
+#     for descriptor in first_loop_descriptors:
+
+#         if network_name_descriptor_func(descriptor) != None:
+#             network_descriptor_loop.append(
+#                 network_name_descriptor_func(descriptor)
+#             )
+#         elif multilingual_network_descriptor_func(descriptor) != None:
+#             network_descriptor_loop.append(
+#                 multilingual_network_descriptor_func(descriptor)
+#             )
+#         elif private_data_specifier_descriptor_func(descriptor, "first") != None:
+#             network_descriptor_loop.append(
+#                 private_data_specifier_descriptor_func(descriptor, "first")
+#             )
+#         else:
+#             pass
+
+#     # Generate second loop
+#     for descriptor in second_loop_descriptors:
+#         transport_stream_loop.append(
+#             transport_stream_loop_item(
+#                 transport_stream_id = descriptor["ts"],
+#                 original_network_id = network_id,
+#                 transport_descriptor_loop = [
+#                     service_list_descriptor_func(descriptor),
+#                     satellite_delivery_system_descriptor_func(descriptor)
+#                 ]
+#             )
+#         )
+
+#     return (sec_len(network_descriptor_loop, transport_stream_loop), 
+#             network_descriptor_loop, 
+#             transport_stream_loop)
+
+def nit_descriptors_generator(descriptor):
+    ''''''
+
+    handlers = {
+        "network_name_descriptor" : network_name_descriptor_func,
+        "multilingual_network_descriptor": multilingual_network_descriptor_func,
+        "private_data_specifier_descriptor": private_data_specifier_descriptor_func_2,
+        "service_list_descriptor": service_list_descriptor_func,
+        "satellite_delivery_system_descriptor": satellite_delivery_system_descriptor_func
+    }
+
+    descriptor_name = get_dict_key(descriptor)
+
+    if descriptor_name in handlers:
+        result = handlers[descriptor_name](descriptor)
+    else:
+        print ("Error! Unknown NIT descriptor.")
+        result = None
+    return result
+
+
+def nit_loops(network_data, network_id):
     '''Function get 2 list args with transports,
     and return length of loops'''
 
     network_descriptor_loop = []
+    
     transport_stream_loop = []
 
-    first_loop_descriptors = kwargs["descriptors"][0]
-    second_loop_descriptors = kwargs["descriptors"][1]
-    network_id = kwargs["network_id"]
+    first_loop_descriptors = network_data["descriptors"]
 
-    # Generate first_loop
+    # Generate first loop
     for descriptor in first_loop_descriptors:
-
-        if network_name_descriptor_func(descriptor) != None:
-            network_descriptor_loop.append(
-                network_name_descriptor_func(descriptor)
-            )
-        elif multilingual_network_descriptor_func(descriptor) != None:
-            network_descriptor_loop.append(
-                multilingual_network_descriptor_func(descriptor)
-            )
-        elif private_data_specifier_descriptor_func(descriptor, "first") != None:
-            network_descriptor_loop.append(
-                private_data_specifier_descriptor_func(descriptor, "first")
-            )
+        descriptors_pack = nit_descriptors_generator(descriptor)
+        if descriptors_pack != None:
+            network_descriptor_loop.append(descriptors_pack)
         else:
             pass
 
     # Generate second loop
-    for descriptor in second_loop_descriptors:
+    for transport in network_data["transports"]:
+        transport_descriptor_loop = []
+        second_loop_descriptors = transport["descriptors"]
+        for descriptor in second_loop_descriptors:
+            descriptors_pack = nit_descriptors_generator(descriptor)
+            if descriptors_pack != None:
+                transport_descriptor_loop.append(descriptors_pack)
+            else:
+                pass
         transport_stream_loop.append(
             transport_stream_loop_item(
-                transport_stream_id = descriptor["ts"],
+                transport_stream_id = transport["transport_id"],
                 original_network_id = network_id,
-                transport_descriptor_loop = [
-                    service_list_descriptor_func(descriptor),
-                    satellite_delivery_system_descriptor_func(descriptor)
-                ]
+                transport_descriptor_loop = transport_descriptor_loop
             )
         )
 
@@ -254,25 +317,39 @@ def nit_loops(transports_list, *args, **kwargs):
             transport_stream_loop)
 
 
-def sdt_loops(transport, *args, **kwargs):
+
+
+def sdt_descriptors_generator(descriptor):
+    ''''''
+
+    handlers = {
+        "service_descriptor" : service_descriptor_func,
+        "private_data_specifier_descriptor": private_data_specifier_descriptor_func_2
+    }
+
+    descriptor_name = get_dict_key(descriptor)
+
+    if descriptor_name in handlers:
+        result = handlers[descriptor_name](descriptor)
+    else:
+        print ("Error! Unknown event descriptor")
+        result = None
+    return result
+
+
+
+def sdt_loops(services):
 
     service_loop = []
 
-    transport = transport[0]
-
-    for service in transport["services"]:
-
+    for service in services:
         service_descriptor_loop = []
-        active_descriptors = []
-
         for descriptor in service["descriptors"]:
-
-            if service_descriptor_func(descriptor) != None:
-                service_descriptor_loop.append(service_descriptor_func(descriptor))
-            elif private_data_specifier_descriptor_func(descriptor, "first") != None:
-                service_descriptor_loop.append(private_data_specifier_descriptor_func(descriptor, "first"))
+            descriptors_pack = sdt_descriptors_generator(descriptor)
+            if descriptors_pack != None:
+                service_descriptor_loop.append(descriptors_pack)
             else:
-                pass       
+                pass      
 
         service_loop.append(
             service_loop_item(
@@ -367,8 +444,7 @@ def eit_loops(events, descriptors):
                 event_descriptor_loop.append(descriptor_pack)
             else:
                 pass
-                
-    print (len(event_descriptor_loop))
+
     el = event_loop = [
         event_loop_item(
             event_id = i["event"][0],
@@ -386,7 +462,7 @@ def eit_loops(events, descriptors):
             event_descriptor_loop = event_descriptor_loop
         ) for i in events
     ]
-    print (el)
+
     return el
 
 
@@ -407,28 +483,17 @@ def check_length(item_length, items_list, table, *args, **kwargs):
         descriptor_section_list = bat_descriptor_for_sections
     elif table == "NIT":
         ts_section_list = nit_ts_for_sections
-        descriptor_section_list = nit_descriptor_for_sections
-    elif table == "SDT Actual":
-        ts_section_list = sdt_act_for_sections
-    elif table == "SDT Other":
-        ts_section_list = sdt_oth_for_sections
     else:
         pass
 
     if 0 <= (item_length + 13) <= (section_max_size - 3):
         ts_section_list.append(items_list)
-        descriptor_section_list.append(kwargs["descriptors"])
-        # print("\n")
-        # print("*FINAL*FINAL*FINAL**FINAL**FINAL**FINAL**FINAL**FINAL*")
-        # print (bat_descriptor_for_sections)
-        # print("*FINAL*FINAL*FINAL**FINAL**FINAL**FINAL**FINAL**FINAL*")
-        # print("\n")
-    else:
-        get_sections = split_to_section(items_list, kwargs["descriptors"])
-        sections = get_sections[0]
-        sections_descriptors = get_sections[1]
 
-        for sec, sec_des in zip(sections, sections_descriptors):
+    else:
+        get_sections = split_to_section(items_list)
+        sections = get_sections[0]
+
+        for sec in sections:
             if table == "BAT":
                 check_length(
                     bat_loops(
@@ -443,22 +508,15 @@ def check_length(item_length, items_list, table, *args, **kwargs):
                 check_length(
                     nit_loops(
                         sec,
-                        network_id = kwargs["network_id"],
-                        descriptors = sec_des)[0], 
+                        network_id = kwargs["network_id"])[0], 
                     sec, 
                     table, 
-                    network_id = kwargs["network_id"],
-                    descriptors = sec_des) # Recursion
+                    network_id = kwargs["network_id"]) # Recursion
 
-            elif table == "SDT Actual":
-                check_length(sdt_loops(sec)[0], sec, table)
-            elif table == "SDT Other":
-                check_length(sdt_loops(sec)[0], sec, table)
-
-    return (ts_section_list, descriptor_section_list)
+    return ts_section_list
 
 
-def check_length_sdt(item_length, items_list, transport_id, table, *args, **kwargs):
+def check_length_sdt(item_length, items_list, transport_id, table):
     '''This function check length of second loop for all
     transports in this loop. If length of loop > 1024 - 3,
     then it's divides trasnport list to multiple list, like 1/2
@@ -480,7 +538,7 @@ def check_length_sdt(item_length, items_list, transport_id, table, *args, **kwar
     if 0 <= (item_length + 13) <= (section_max_size - 3):
         ts_section_list.append(items_list)
     else:
-        sections = split_to_section_sdt(items_list[0]["services"])
+        sections = split_to_section_sdt(items_list)
 
         for sec in sections:
             if table == "SDT Actual":
@@ -519,7 +577,6 @@ def check_length_eit(items_list, table):
 
     section = event_chunks_list(items_list)
 
-    print (section)
 
     for i in section:
         if table == "EIT Actual Schedule":
@@ -544,6 +601,8 @@ def null_list(dvb_table):
         nit_ts_for_sections.clear()
     elif dvb_table == "SDT Actual": 
         sdt_act_for_sections.clear()
+    elif dvb_table == "SDT Other": 
+        sdt_oth_for_sections.clear()
     elif dvb_table == "EIT Actual Schedule": 
         eit_sched_for_sections.clear()
     else:

@@ -281,7 +281,7 @@ class multilingual_network_descriptor_loop_item(DVBobject):
     
         return pack(fmt, 
             self.ISO_639_language_code,
-            self.network_name,)
+            self.network_name)
 
 class multilingual_network_descriptor(Descriptor):
 
@@ -291,7 +291,7 @@ class multilingual_network_descriptor(Descriptor):
 
         multilingual_network_bytes = b"".join(
             map(lambda x: x.pack(),    
-            self.multilingual_network_descriptor_loop),)                                    
+            self.multilingual_network_descriptor_loop))                                    
 
         fmt = "!%ds" % len(multilingual_network_bytes)
 

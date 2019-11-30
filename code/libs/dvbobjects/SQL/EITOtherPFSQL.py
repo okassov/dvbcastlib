@@ -1,6 +1,7 @@
 import psycopg2
 import datetime
-from db_connect import connect
+from .db_connect import connect
+
 
 def get_services(conn, transport_id):
     '''This function return services data 
@@ -41,11 +42,14 @@ def get_descriptors(conn, transport_id, service_id, is_event = False):
         if is_event:
             cur.execute("SELECT descriptor_name FROM \
                 eit_actual_schedule_loop WHERE transport=%s and \
-                service=%s and is_event=%s and is_active=%s" % (transport_id, service_id, True, True))
+                service=%s and is_event=%s \
+                and is_active=%s" % (transport_id, service_id, True, True))
         else:
             cur.execute("SELECT descriptor_name FROM \
                 eit_actual_schedule_loop WHERE transport=%s and \
-                service=%s and is_event=%s and is_active=%s" % (transport_id, service_id, False, True))
+                service=%s and is_event=%s \
+                and is_active=%s" % (transport_id, service_id, False, True))
+
         active_descriptors = cur.fetchall()
         return active_descriptors
     except psycopg2.Error as e:
@@ -223,14 +227,6 @@ def mapping(conn, transport_id, services):
         else:
             descriptors = []
 
-        # result["services"].append(
-        #     {
-        #         "id": id, 
-        #         "service_id": service_id, 
-        #         "descriptors": descriptors,
-        #         "events": events           
-        #     }
-        # )
         result.append(
             {
                 "id": id, 

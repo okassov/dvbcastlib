@@ -16,75 +16,19 @@ from datetime import *
 from dateutil.rrule import *
 from dateutil.parser import *
 from SQL.BATSQL import *
-from SQL.NITSQL import *
-#from SQL.EITSQLActualSchedule import *
+from SQL.NITSQLtest import *
 from SQL.EITActualPFSQL import *
+from SQL.EITOtherPFSQL import *
 from SQL.EITActualScheduleSQL import *
-#from SQL.SDTSQL import *
-from SQL.SDTSQLtest import *
+from SQL.SDTActualSQL import *
+from SQL.SDTOtherSQL import *
 from SQL.BATSQLDescriptors import *
-#from SQL.SDTSQLDescriptors import *
 import time
 
 
-
-services = [[100, 1], [200, 1], [300, 1], [400, 1], [500, 1], [600, 1], [700, 1], [800, 1], [900, 1],
-            [110, 1], [210, 1], [310, 1], [410, 1], [510, 1], [610, 1], [710, 1], [810, 1], [910, 1],
-            [120, 1], [220, 1], [320, 1], [420, 1], [520, 1], [620, 1], [720, 1], [820, 1], [920, 1],
-            [130, 1], [230, 1], [330, 1], [430, 1], [530, 1], [630, 1], [730, 1], [830, 1], [930, 1],
-            [140, 1], [240, 1], [340, 1], [440, 1], [540, 1], [640, 1], [740, 1], [840, 1], [940, 1],
-            [150, 1], [250, 1], [350, 1], [450, 1], [550, 1], [650, 1], [750, 1], [850, 1], [950, 1],
-            [160, 1], [260, 1], [360, 1], [460, 1], [560, 1], [660, 1], [760, 1], [860, 1], [960, 1],
-            [170, 1], [270, 1], [370, 1], [470, 1], [570, 1], [670, 1], [770, 1], [870, 1], [970, 1],
-            [180, 1], [280, 1], [380, 1], [480, 1], [580, 1], [680, 1], [780, 1], [880, 1], [980, 1],
-            [190, 1], [290, 1], [390, 1], [490, 1]]
-
-events = [
-            {"event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 3, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 4, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 5, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 6, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 7, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 8, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 9, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 10, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 11, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 12, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 13, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 14, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 15, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 16, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 17, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 18, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 19, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 20, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 21, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 22, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 23, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 24, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-            {"event_id": 25, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"event_id": 26, "event_name": b"Second Event", "text": b"Second Event Text"}, 
-            {"event_id": 27, "event_name": b"Third Event", "text": b"Third Event Text"}, 
-            {"event_id": 28, "event_name": b"Fourth Event", "text": b"Fourth Event Text"},
-        ]
-
-events2 = [
-            {"sid": 100, "event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"sid": 100, "event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"},
-            {"sid": 200, "event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"sid": 200, "event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"},
-            {"sid": 300, "event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"sid": 300, "event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"},
-            {"sid": 400, "event_id": 1, "event_name": b"First Event", "text": b"First Event Text"}, 
-            {"sid": 400, "event_id": 2, "event_name": b"Second Event", "text": b"Second Event Text"},
-        ]
-
-
-# #############################
-# # Network Information Table #
-# #############################
+#############################
+# Network Information Table #
+#############################
 
 # def NIT(network_id, transports, nit_id, descriptors):
 
@@ -132,16 +76,58 @@ events2 = [
 #     else:
 #         pass
 
-# nits = [{"network_id": 41007, "id": 1}]#, {"network_id": 41007, "id": 2}]
+def NIT(network_object_id, network_id, network_data):
 
-# for nit in nits:
-#     transports = nit_sql_main(nit["id"]) # Get transports list for BAT
+    nit_file_name = "nit_" + str(network_object_id) + ".sec"
 
-#     descriptors = nit_des_sql_main(nit["id"], transports) # Get descriptors for NIT
-#     #print (descriptors)
+    nit_sections = []
 
-#     NIT(nit["network_id"], transports, nit["id"], descriptors) # Generate Sections
-#     null_list("NIT") # Null section list for next loop
+    # Get list of ts_lists
+    sections_ts = check_length(
+        nit_loops(
+            network_data, 
+            network_id)[0], 
+        network_data, 
+        "NIT", 
+        network_id = network_id)
+
+    # Generate NIT sections
+    if len(sections_ts) != 0:
+
+        for idx, i in enumerate(sections_ts):
+
+            nit = network_information_section(
+                network_id = network_id,
+                network_descriptor_loop = nit_loops(i, network_id = network_id)[1], # Get first loop items
+                transport_stream_loop = nit_loops(i, network_id = network_id)[2], # Get second loop items
+                version_number = 1,
+                section_number = idx,
+                last_section_number = len(sections_ts) - 1
+            )
+            nit_sections.append(nit)
+
+        # Write sections to nit.sec file
+        with open(nit_file_name, "wb") as DFILE:
+            for sec in nit_sections: 
+                print (sec)
+                DFILE.write(sec.pack())
+    else:
+        pass
+
+nits = [{"network_id": 41007, "id": 1}]#, {"network_id": 41007, "id": 2}]
+
+for nit in nits:
+
+    network_data = nit_sql_main(nit["id"], nit["network_id"]) # Get network information with transports 
+
+    if network_data != None and len(network_data["transports"]) != 0:
+
+        NIT(nit["id"], nit["network_id"], network_data) # Generate Sections
+        null_list("NIT") # Null section list for next loop
+
+    else:
+        print ("Not found any transports in network with ID: " + str(nit["id"]))
+        pass
 
 
 # #############################
@@ -209,114 +195,122 @@ events2 = [
 #     null_list("BAT") # Null section list for next loop
 
 
-# #############################################################
-# #Service Description Actual Table  (ETSI EN 300 468 5.2.3) #
-# #############################################################
+#############################################################
+# Service Description Actual Table  (ETSI EN 300 468 5.2.3) #
+#############################################################
 
 
-# def SDTActual(transport, transport_id):
+def SDTActual(services, transport_id):
 
-#     sdt_file_name = "sdt_act_" + str(transport_id) + ".sec"
+    sdt_file_name = "sdt_act_" + str(transport_id) + ".sec"
 
-#     sdt_sections = []
+    sdt_sections = []
 
-#     # Get list of svc_lists
-#     sections_ts = check_length_sdt(
-#         sdt_loops(
-#             transport)[0], 
-#         transport,
-#         transport_id,
-#         "SDT Actual")
+    # Get list of svc_lists
+    sections_ts = check_length_sdt(
+        sdt_loops(
+            services)[0], 
+        services,
+        transport_id,
+        "SDT Actual")
 
-#     # Generate SDT sections
-#     if len(sections_ts) != 0:
+    # Generate SDT sections
+    if len(sections_ts) != 0:
 
-#         for idx, i in enumerate(sections_ts):
+        for idx, i in enumerate(sections_ts):
 
-#             sdt = service_description_section(
-#                 transport_stream_id = transport_id,
-#                 original_network_id = 41007,
-#                 service_loop = sdt_loops(i)[1], #Get loop items
-#                 version_number = 1,
-#                 section_number = idx,
-#                 last_section_number = len(sections_ts) - 1,
-#             )
+            sdt = service_description_section(
+                transport_stream_id = transport_id,
+                original_network_id = 41007,
+                service_loop = sdt_loops(i)[1], #Get loop items
+                version_number = 1,
+                section_number = idx,
+                last_section_number = len(sections_ts) - 1,
+            )
 
-#             sdt_sections.append(sdt)
+            sdt_sections.append(sdt)
 
-#         # Write sections to bat.sec file
-#         with open(sdt_file_name, "wb") as DFILE:
-#             for sec in sdt_sections: 
-#                 print (sec)
-#                 DFILE.write(sec.pack())
-#     else:
-#         pass
+        # Write sections to bat.sec file
+        with open(sdt_file_name, "wb") as DFILE:
+            for sec in sdt_sections: 
+                print (sec)
+                DFILE.write(sec.pack())
+    else:
+        pass
 
-# sdt_acts = [{"id": 1}]
+# sdt_acts = [{"id": 1}, {"id": 2}]
 
 # for sdt in sdt_acts:
 
-#     transport = sdt_sql_main(sdt["id"])
-#     if len(transport) != 0:
-#         SDTActual(transport, sdt["id"])
+#     services = sdt_sql_main(sdt["id"])
 
+#     if len(services) != 0:
+#         SDTActual(services, sdt["id"])
 #         null_list("SDT Actual") # Null section list for next loop
 #     else:
 #         pass
 
-# #############################################################
-# # Service Description Other Table  (ETSI EN 300 468 5.2.3)  #
-# #############################################################
+#############################################################
+# Service Description Other Table  (ETSI EN 300 468 5.2.3)  #
+#############################################################
 
-# def SDTOther(transport, transport_id):
-
-#     sdt_file_name = "sdt_oth_" + str(transport_id) + ".sec"
-
-#     sdt_oth_sections = []
+def SDTOther(transport):
 
 
-#     # Get list of svc_lists
-#     sections_ts = check_length_sdt(
-#         sdt_loops(transport)[0], 
-#         transport,
-#         transport_id,
-#         "SDT Other")
+    sdt_file_name = "sdt_oth_" + str(1) + ".sec"
 
-#     # Generate SDT sections
-#     if len(sections_ts) != 0:
+    sdt_oth_sections = []
 
-#         for idx, i in enumerate(sections_ts):
+    for transport in transports:
 
-#             sdt = service_description_other_ts_section(
-#                 transport_stream_id = transport_id,
-#                 original_network_id = 41007,
-#                 service_loop = sdt_loops(i)[1], #Get loop items
-#                 version_number = 1,
-#                 section_number = idx,
-#                 last_section_number = len(sections_ts) - 1,
-#             )
+        # Get list of svc_lists
+        sections_ts = check_length_sdt(
+                    sdt_loops(transport["services"])[0], 
+                    transport["services"],
+                    transport["ts"],
+                    "SDT Other")
 
-#             sdt_oth_sections.append(sdt)
+        # Generate SDT sections
+        if len(sections_ts) != 0:
 
-#         # Write sections to bat.sec file
-#         with open(sdt_file_name, "wb") as DFILE:
-#             for sec in sdt_oth_sections: 
-#                 print (sec)
-#                 DFILE.write(sec.pack())
-#     else:
-#         pass
+            for idx, i in enumerate(sections_ts):
 
-# sdt_oth = [{"id": 1}, {"id": 2}]
+
+                sdt = service_description_other_ts_section(
+                    transport_stream_id = transport["ts"],
+                    original_network_id = 41007,
+                    service_loop = sdt_loops(i)[1], #Get loop items
+                    version_number = 1,
+                    section_number = idx,
+                    last_section_number = len(sections_ts) - 1,
+                )
+                sdt_oth_sections.append(sdt)
+
+        else:
+            pass
+
+    # Write sections to bat.sec file
+    with open(sdt_file_name, "wb") as DFILE:
+        for sec in sdt_oth_sections: 
+            print (sec)
+            DFILE.write(sec.pack())
+
+
+# sdt_oth = [{"id": 1}]
+
+# transports = []
 
 # for sdt in sdt_oth:
 
-#     transport = sdt_sql_main(sdt["id"])
-#     if len(transport) != 0:
-#         SDTOther(transport, sdt["id"])
+#     transport = sdt_other_sql_main(sdt["id"])
 
-#         null_list("SDT Actual") # Null section list for next loop
-#     else:
-#         pass
+#     transports.append(transport)
+
+# SDTOther(transports)
+# null_list("SDT Other") # Null section list for next loop
+
+
+
 
 ###############################################
 # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
@@ -335,7 +329,7 @@ def EITActualPF(services, transport_id):
             for idx, j in enumerate(i["events"]):
                 eit_actual_pf = event_information_section(
                     table_id = EIT_ACTUAL_TS_PRESENT_FOLLOWING,
-                    service_id = i["id"],
+                    service_id = i["service_id"],
                     transport_stream_id = transport_id,
                     original_network_id = 41007,
                     event_loop = eit_loops([j], i["descriptors"]), #Get loop items
@@ -345,6 +339,7 @@ def EITActualPF(services, transport_id):
                     last_section_number = len(i["events"]) - 1, 
                 )
                 eit_actual_pf_sections.append(eit_actual_pf)
+
             # Write sections to eit.sec file
             with open(eit_file_name, "wb") as DFILE:
                 for sec in eit_actual_pf_sections: 
@@ -367,9 +362,9 @@ def EITActualPF(services, transport_id):
 #     else:
 #         pass
 
-# # ########################################################
-# # # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
-# # ########################################################
+# ########################################################
+# # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
+# ########################################################
 
 def EITActualSchedule(services, transport_id):
 
@@ -397,11 +392,9 @@ def EITActualSchedule(services, transport_id):
                 }
             )
 
-                #print ("APPEND ==========>" + str(svc["service_id"]) )
-    print (len(sections_ts))
     if len(sections_ts) != 0:
 
-        for idx, j in enumerate(sections_ts):
+        for idx, i in enumerate(sections_ts):
 
             eit_actual_schedule = event_information_section(
                 table_id = EIT_ACTUAL_TS_SCHEDULE14,
@@ -426,69 +419,69 @@ def EITActualSchedule(services, transport_id):
     else:
         pass
 
-eit_act_sched = [{"id": 1}]
+# eit_act_sched = [{"id": 1}]
 
-for eit in eit_act_sched:
-    services = eit_sch_sql_main(eit["id"])
+# for eit in eit_act_sched:
+#     services = eit_sch_sql_main(eit["id"])
 
-    if len(services) != 0:
-        EITActualSchedule(services, eit["id"])
-        #null_list("EIT Actual PF") # Null section list for next loop
-    else:
-        pass
+#     if len(services) != 0:
+#         EITActualSchedule(services, eit["id"])
+#         #null_list("EIT Actual PF") # Null section list for next loop
+#     else:
+#         pass
 
 #######################################################
 # EIT Other Present/Following (ETSI EN 300 468 5.2.4) #
 #######################################################
 
 def eit_other_pf(transports):
-
-    eit_file_name = "eit_oth_pf_" + str(transport_id) + ".sec"
+    
+    eit_file_name = "eit_oth_pf_" + str(1) + ".sec"
 
     eit_other_pf_sections = []
 
     for transport in transports:
+        
+        for i in transport["services"]:
 
-        for i in services:
+            print (i)
 
             if len(i["events"]) != 0:
 
-            for idx, i in enumerate(sections_ts):
-
-                for jdx, j in enumerate(i):
+                for idx, j in enumerate(i["events"]):
 
                     eit_other_pf = event_information_section(
                         table_id = EIT_ANOTHER_TS_PRESENT_FOLLOWING,
-                        service_id = i[0]["sid"],
-                        transport_stream_id = 1,
+                        service_id = i["service_id"],
+                        transport_stream_id = transport["ts"],
                         original_network_id = 41007,
-                        event_loop = eit_loops([j])[1], #Get loop items
-                        segment_last_section_number = 1,
+                        event_loop = eit_loops([j], i["descriptors"]), #Get loop items
+                        segment_last_section_number = len(i["events"]) - 1,
                         version_number = 1, 
-                        section_number = jdx,
-                        last_section_number = len(i) - 1, 
+                        section_number = idx,
+                        last_section_number = len(i["events"]) - 1, 
                     )
 
                     eit_other_pf_sections.append(eit_other_pf)
 
     # Write sections to eit_oth_pf.sec file
-    with open("./eit_oth_pf.sec", "wb") as DFILE:
+    with open(eit_file_name, "wb") as DFILE:
         for sec in eit_other_pf_sections: 
             print (sec)
             DFILE.write(sec.pack())
 
 
-eit_oth_pf = [{"id": 1}, {"id": 2}]
+# eit_oth_pf = [{"id": 1}, {"id": 2}]
 
-transports = []
+# transports = []
 
-for eit in eit_oth_pf:
+# for eit in eit_oth_pf:
 
-    transport = eit_sql_main(eit["id"])
+#     transport = eit_oth_pf_sql_main(eit["id"])
 
-    transports.append(transport)
+#     transports.append(transport)
 
-eit_oth_pf(transports)
+# eit_other_pf(transports)
 
 
 # ##############################################################################################

@@ -54,14 +54,21 @@ def get_descriptor_data(conn, descriptor_name, transport_id, service_id, dvb_tab
             and dvb_table='%s'" % (descriptor_name, transport_id, service_id, dvb_table))
         data = cur.fetchall()
         columns = [i[0] for i in cur.description]
-        return columns, data
+
+        if data != None and len(data) != 0:
+            data = list(data[0]) # Modify tuple columns to list
+        else:
+            data = []
+
+        result = { descriptor_name: dict(zip(columns, data)) }
+        return result
     except psycopg2.Error as e:
         print (e)
     finally:
         cur.close()
 
 
-def mapping(transport_id, services, service_descriptors):
+def mapping(conn, transport_id, services):
     '''This function map services and service descriptors 
     to transport. It's get transport_id, list of services with
     data in tupple and descriptors in list as args.
@@ -90,80 +97,42 @@ def mapping(transport_id, services, service_descriptors):
         }
     '''
 
-    result = {"ts": transport_id, "services": []}
+    result = []
 
     for svc in services:
 
         id = svc[0]
         service_id = svc[1]
 
-        for descriptors in service_descriptors:
-            for i in descriptors:
-                descriptor_name = get_dict_key(i)
-                if i[descriptor_name]["service"] == id:
-                    result["services"].append(
-                        {
-                            "id": id, 
-                            "service_id": service_id, 
-                            "descriptors": descriptors
-                        }
-                    )
-                else:
-                    pass
-                break # Check only first descriptor and after break
+        descriptors = get_descriptors(conn, transport_id, id) # Get active descriptors
+        
+        # Check descriptors
+        if descriptors != None and len(descriptors) != 0:
+            descriptors = [ get_descriptor_data(conn, i[0], transport_id, id, "SDT") for i in descriptors]
+        else:
+            descriptors = []
+
+        result.append(
+            {
+                "id": id, 
+                "service_id": service_id, 
+                "descriptors": descriptors,          
+            }
+        )
+        
+    result = {"ts": transport_id, "services": result} # Add for other because need key "ts"
 
     return result
 
 
-def sdt_sql_main(transport_id):
+def sdt_other_sql_main(transport_id):
     '''SDT SQL Main function'''
 
     conn = connect()
 
-    transports_with_services = []
-
-    descriptors = []
-
-    # Temporary list for combine descriptors of each service in one sub-list
-    service_descriptors = [] 
-
     services = get_services(conn, transport_id) # Get all services with data of this ts
 
-    for svc in services:
-        service_id = svc[0]
-        active_descriptors = get_descriptors(conn, transport_id, service_id)
+    return mapping(conn, transport_id, services)
 
-        if len(active_descriptors) != 0:
 
-            temp_list = []
-
-            for descriptor in active_descriptors:
-                descriptor = descriptor[0]
-
-                result = get_descriptor_data(
-                            conn, 
-                            descriptor, 
-                            transport_id, 
-                            service_id, 
-                            "SDT")
-
-                descriptor_columns = result[0]
-                descriptor_data = result[1]
-
-                for data in descriptor_data:
-
-                    dict_data = dict(zip(descriptor_columns, data)) # Combine columns name and data
-                    temp_list.append({descriptor: dict_data})
-
-            service_descriptors.append(temp_list)
-
-        else:
-            print ("Not found any descriptors for SDT loop")
-
-    mapped = mapping(transport_id, services, service_descriptors) # Mapping transport to services
-    transports_with_services.append(mapped) # Append mapping to result list
-    
-    conn.close()
-
-    return transports_with_services
 

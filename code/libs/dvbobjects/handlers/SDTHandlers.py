@@ -6,12 +6,6 @@ from .DefaultHandlers import *
 # Handlers for NIT Second Loop (Transport Descriptor Loop) #
 ############################################################
 
-    #         service_descriptor_loop = [
-    #             service_descriptor(
-    #                 service_type = 1, # digital television service
-    #                 service_provider_name = b"Marat Provider",
-    #                 service_name = b"Marat Service",
-
 
 def service_descriptor_func(items):
     '''This function get dict as arg.
@@ -54,7 +48,7 @@ def service_descriptor_func(items):
 
         result = service_descriptor(
                 service_type = stype,
-                service_provider_name =spname ,
+                service_provider_name = spname ,
                 service_name = sname
             )
 

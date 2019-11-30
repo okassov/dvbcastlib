@@ -38,59 +38,59 @@ def bouquet_name_descriptor_func(items):
 # Handlers for NIT Second Loop (Transport Descriptor Loop) #
 ############################################################
 
-def service_list_descriptor_func(items):
-    '''This function get dict as arg.
-    Input dict format ===>
-    {
-        "ts": id,
-        "descriptors:
-            [ 
-                {
-                    "descriptor1_name": 
-                        {
-                        "descirptor1_value1": descriptor_data1,
-                        "descirptor1_value2": descriptor_data2,
-                        "descirptor1_value3": descriptor_data3,
-                        ...
-                        },
-                },
-                {
-                    "descriptor2_name": 
-                        {
-                        "descirptor2_value1": descriptor_data1,
-                        "descirptor2_value2": descriptor_data2,
-                        "descirptor2_value3": descriptor_data3,
-                        ...
-                        },
-                },
-                ...  
-            ]
-    }
-    Return out of service_list_descriptor
-    '''
+# def service_list_descriptor_func(items):
+#     '''This function get dict as arg.
+#     Input dict format ===>
+#     {
+#         "ts": id,
+#         "descriptors:
+#             [ 
+#                 {
+#                     "descriptor1_name": 
+#                         {
+#                         "descirptor1_value1": descriptor_data1,
+#                         "descirptor1_value2": descriptor_data2,
+#                         "descirptor1_value3": descriptor_data3,
+#                         ...
+#                         },
+#                 },
+#                 {
+#                     "descriptor2_name": 
+#                         {
+#                         "descirptor2_value1": descriptor_data1,
+#                         "descirptor2_value2": descriptor_data2,
+#                         "descirptor2_value3": descriptor_data3,
+#                         ...
+#                         },
+#                 },
+#                 ...  
+#             ]
+#     }
+#     Return out of service_list_descriptor
+#     '''
 
-    dvb_service_descriptor_loop = []
+#     dvb_service_descriptor_loop = []
 
-    for item in items["descriptors"]:
-        if get_dict_key(item) == "service_list_descriptor":
+#     for item in items["descriptors"]:
+#         if get_dict_key(item) == "service_list_descriptor":
 
-            body = item["service_list_descriptor"]
+#             body = item["service_list_descriptor"]
 
-            service_ids = body["service_id"] # Get list of Service IDs
-            service_types = body["service_type"] # Get list of Service Types
+#             service_ids = body["service_id"] # Get list of Service IDs
+#             service_types = body["service_type"] # Get list of Service Types
 
-            for (sid, stype) in zip(service_ids, service_types):
-                dvb_service_descriptor_loop.append(
-                    service_descriptor_loop_item(
-                        service_ID = sid,
-                        service_type = stype
-                    )
-                )
-        else:
-            pass
-    result = service_list_descriptor(dvb_service_descriptor_loop = dvb_service_descriptor_loop)
+#             for (sid, stype) in zip(service_ids, service_types):
+#                 dvb_service_descriptor_loop.append(
+#                     service_descriptor_loop_item(
+#                         service_ID = sid,
+#                         service_type = stype
+#                     )
+#                 )
+#         else:
+#             pass
+#     result = service_list_descriptor(dvb_service_descriptor_loop = dvb_service_descriptor_loop)
 
-    return result
+#     return result
 
 
 def nds_e2_descriptor_func(items):
