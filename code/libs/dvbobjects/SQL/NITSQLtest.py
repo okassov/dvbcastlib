@@ -167,20 +167,20 @@ def mapping(conn, network_object_id, network_id, transports):
     # Mapping descriptors to services
     for transport in transports:
 
-        id = transport[0] # Index of transport in database
-        transport_id = transport[1] # DVB transport id
+        transport_object_id = transport[0] # Index of transport in database
+        transport_id = transport[1] # Index of transport in network
 
-        second_loop_descriptors = get_descriptors(conn, id, False)
+        second_loop_descriptors = get_descriptors(conn, transport_object_id, False)
 
         # Check descriptors
         if second_loop_descriptors != None and len(second_loop_descriptors) != 0:
-            second_loop_descriptors = [ get_descriptor_data(conn, i[0], id, "NIT", False) for i in second_loop_descriptors ]
+            second_loop_descriptors = [ get_descriptor_data(conn, i[0], transport_object_id, "NIT", False) for i in second_loop_descriptors ]
         else:
             second_loop_descriptors = []
 
         result["transports"].append(
             {
-                "id": id, 
+                "id": transport_object_id, 
                 "transport_id": transport_id, 
                 "descriptors": second_loop_descriptors       
             }
