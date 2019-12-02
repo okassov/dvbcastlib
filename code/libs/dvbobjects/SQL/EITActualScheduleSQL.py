@@ -208,7 +208,7 @@ def mapping(conn, transport_id, services):
 
 
 
-def eit_sch_sql_main(transport_id):
+def sql_api_eit_schedule(transport_id):
 
     conn = connect()
 

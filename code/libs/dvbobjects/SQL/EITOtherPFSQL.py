@@ -242,7 +242,7 @@ def mapping(conn, transport_id, services):
 
 
 
-def eit_oth_pf_sql_main(transport_id):
+def sql_api_eit_other_pf(transport_id):
 
     conn = connect()
 

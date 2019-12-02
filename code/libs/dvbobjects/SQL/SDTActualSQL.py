@@ -123,7 +123,7 @@ def mapping(conn, transport_id, services):
     return result
 
 
-def sdt_sql_main(transport_id):
+def sql_api_sdt_actual(transport_id):
     '''SDT SQL Main function'''
 
     conn = connect()

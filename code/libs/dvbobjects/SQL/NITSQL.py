@@ -189,7 +189,7 @@ def mapping(conn, network_object_id, network_id, transports):
     return result
 
 
-def nit_sql_main(network_object_id, network_id):
+def sql_api_nit(network_object_id, network_id):
     conn = connect()
 
     transports = get_transports(conn, network_object_id)

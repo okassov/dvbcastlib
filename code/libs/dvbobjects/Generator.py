@@ -16,14 +16,13 @@ from dvbobjects.utils.Write import *
 from datetime import *
 from dateutil.rrule import *
 from dateutil.parser import *
-from SQL.BATSQLtest import *
-from SQL.NITSQLtest import *
+from SQL.BATSQL import *
+from SQL.NITSQL import *
 from SQL.EITActualPFSQL import *
 from SQL.EITOtherPFSQL import *
 from SQL.EITActualScheduleSQL import *
 from SQL.SDTActualSQL import *
 from SQL.SDTOtherSQL import *
-from SQL.BATSQLDescriptors import *
 import time
 
 
@@ -32,7 +31,7 @@ import time
 #############################
 
 
-def NIT(network_object_id, network_id, network_data):
+def nit(network_object_id, network_id, network_data):
 
     nit_file_name = "nit_" + str(network_object_id) + ".sec"
     nit_sections = []
@@ -70,27 +69,27 @@ def NIT(network_object_id, network_id, network_data):
     else:
         pass
 
-nits = [{"network_id": 41007, "id": 1}, {"network_id": 41007, "id": 2}]
+# nits = [{"network_id": 41007, "id": 1}, {"network_id": 41007, "id": 2}]
 
-for nit in nits:
+# for nit in nits:
 
-    network_data = nit_sql_main(nit["id"], nit["network_id"]) # Get network information with transports 
+#     network_data = nit_sql_main(nit["id"], nit["network_id"]) # Get network information with transports 
 
-    if network_data != None and len(network_data["transports"]) != 0:
+#     if network_data != None and len(network_data["transports"]) != 0:
 
-        NIT(nit["id"], nit["network_id"], network_data) # Generate Sections
-        null_list("NIT") # Null section list for next loop
+#         NIT(nit["id"], nit["network_id"], network_data) # Generate Sections
+#         null_list("NIT") # Null section list for next loop
 
-    else:
-        print ("Not found any transports in network with ID: " + str(nit["id"]))
-        pass
+#     else:
+#         print ("Not found any transports in network with ID: " + str(nit["id"]))
+#         pass
 
 
 #############################
 # Bouquet Association Table #
 #############################
 
-def BAT(bouquet_id, network_id, bat_data):
+def bat(bouquet_id, network_id, bat_data):
 
     bat_file_name = "bat_" + str(bouquet_id) + ".sec"
     bat_sections = []
@@ -134,15 +133,15 @@ def BAT(bouquet_id, network_id, bat_data):
         pass
 
 
-bats = [{"bouquet_id": 24385, "network_id": 41007, "id": 1}, {"bouquet_id": 24816, "network_id": 41007, "id": 2}]
+# bats = [{"bouquet_id": 24385, "network_id": 41007, "id": 1}, {"bouquet_id": 24816, "network_id": 41007, "id": 2}]
 
-for bat in bats:
-    bat_data = bat_main_sql(bat["id"], bat["bouquet_id"]) # Get transports list for BAT
+# for bat in bats:
+#     bat_data = bat_main_sql(bat["id"], bat["bouquet_id"]) # Get transports list for BAT
 
-    if bat_data != None and len(bat_data) != 0:
+#     if bat_data != None and len(bat_data) != 0:
 
-        BAT(bat["bouquet_id"], bat["network_id"], bat_data) # Generate Sections
-        null_list("BAT") # Null section list for next loop
+#         BAT(bat["bouquet_id"], bat["network_id"], bat_data) # Generate Sections
+#         null_list("BAT") # Null section list for next loop
 
 
 #############################################################
@@ -150,7 +149,7 @@ for bat in bats:
 #############################################################
 
 
-def SDTActual(services, transport_id):
+def sdt_actual(transport_id, services):
 
     sdt_file_name = "sdt_act_" + str(transport_id) + ".sec"
 
@@ -185,23 +184,23 @@ def SDTActual(services, transport_id):
     else:
         pass
 
-sdt_acts = [{"id": 1}, {"id": 2}]
+# sdt_acts = [{"id": 1}, {"id": 2}]
 
-for sdt in sdt_acts:
+# for sdt in sdt_acts:
 
-    services = sdt_sql_main(sdt["id"])
+#     services = sdt_sql_main(sdt["id"])
 
-    if len(services) != 0:
-        SDTActual(services, sdt["id"])
-        null_list("SDT Actual") # Null section list for next loop
-    else:
-        pass
+#     if len(services) != 0:
+#         SDTActual(services, sdt["id"])
+#         null_list("SDT Actual") # Null section list for next loop
+#     else:
+#         pass
 
 #############################################################
 # Service Description Other Table  (ETSI EN 300 468 5.2.3)  #
 #############################################################
 
-def SDTOther(transport):
+def sdt_other(transports):
 
     sdt_file_name = "sdt_oth_" + str(1) + ".sec"
     sdt_oth_sections = []
@@ -236,17 +235,17 @@ def SDTOther(transport):
     write_section(sdt_file_name, sdt_oth_sections)
 
 
-sdt_oth = [{"id": 1}]
+# sdt_oth = [{"id": 1}]
 
-transports = []
+# transports = []
 
-for sdt in sdt_oth:
+# for sdt in sdt_oth:
 
-    transport = sdt_other_sql_main(sdt["id"])
-    transports.append(transport)
+#     transport = sdt_other_sql_main(sdt["id"])
+#     transports.append(transport)
 
-SDTOther(transports)
-null_list("SDT Other") # Null section list for next loop
+# SDTOther(transports)
+# null_list("SDT Other") # Null section list for next loop
 
 
 
@@ -254,7 +253,7 @@ null_list("SDT Other") # Null section list for next loop
 # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
 ########################################################
 
-def EITActualPF(services, transport_id):
+def eit_actual_pf(transport_id, services):
 
     eit_file_name = "eit_act_pf_" + str(transport_id) + ".sec"
     eit_actual_pf_sections = []
@@ -284,22 +283,22 @@ def EITActualPF(services, transport_id):
     else:
         pass
 
-eit_act_pf = [{"id": 1}, {"id": 2}]
+# eit_act_pf = [{"id": 1}, {"id": 2}]
 
-for eit in eit_act_pf:
-    services = eit_sql_main(eit["id"])
+# for eit in eit_act_pf:
+#     services = eit_sql_main(eit["id"])
 
-    if len(services) != 0:
-        EITActualPF(services, eit["id"])
-        null_list("EIT Actual PF") # Null section list for next loop
-    else:
-        pass
+#     if len(services) != 0:
+#         EITActualPF(services, eit["id"])
+#         null_list("EIT Actual PF") # Null section list for next loop
+#     else:
+#         pass
 
 ########################################################
 # EIT Actual Present/Following (ETSI EN 300 468 5.2.4) #
 ########################################################
 
-def EITActualSchedule(services, transport_id):
+def eit_actual_schedule(transport_id, services):
 
     eit_file_name = "eit_act_sch_" + str(transport_id) + ".sec"
 
@@ -347,16 +346,16 @@ def EITActualSchedule(services, transport_id):
     else:
         pass
 
-eit_act_sched = [{"id": 1}]
+# eit_act_sched = [{"id": 1}]
 
-for eit in eit_act_sched:
-    services = eit_sch_sql_main(eit["id"])
+# for eit in eit_act_sched:
+#     services = eit_sch_sql_main(eit["id"])
 
-    if len(services) != 0:
-        EITActualSchedule(services, eit["id"])
-        #null_list("EIT Actual PF") # Null section list for next loop
-    else:
-        pass
+#     if len(services) != 0:
+#         EITActualSchedule(services, eit["id"])
+#         #null_list("EIT Actual PF") # Null section list for next loop
+#     else:
+#         pass
 
 #######################################################
 # EIT Other Present/Following (ETSI EN 300 468 5.2.4) #
@@ -392,16 +391,16 @@ def eit_other_pf(transports):
     write_section(eit_file_name, eit_other_pf_sections)
 
 
-eit_oth_pf = [{"id": 1}, {"id": 2}]
+# eit_oth_pf = [{"id": 1}, {"id": 2}]
 
-transports = []
+# transports = []
 
-for eit in eit_oth_pf:
+# for eit in eit_oth_pf:
 
-    transport = eit_oth_pf_sql_main(eit["id"])
-    transports.append(transport)
+#     transport = eit_oth_pf_sql_main(eit["id"])
+#     transports.append(transport)
 
-eit_other_pf(transports)
+# eit_other_pf(transports)
 
 
 #####################################################
