@@ -9,7 +9,7 @@ def get_bat_transports(conn, bat_object_id):
     cur = conn.cursor()
     try:
         cur.execute("SELECT DISTINCT transport, transport_id FROM \
-            bat_to_transports WHERE bat=%s" % bat_object_id)
+            bouquet_to_transports WHERE bouquet=%s" % bat_object_id)
         transports = cur.fetchall()
         print (transports)
         return transports
@@ -36,22 +36,6 @@ def get_services(conn, service_id):
         cur.close()
 
 
-# def get_bat_services(conn, bat_object_id, transport_object_id):
-
-#         cur = conn.cursor()
-
-#         try:
-#             cur.execute("SELECT service FROM bat_to_transports \
-#                 WHERE transport=%s and bat=%s" % (transport_object_id, bat_object_id))
-
-#             services = cur.fetchall()
-#             return services
-#         except psycopg2.Error as e:
-#             print (e)
-#         finally:
-#             cur.close()
-
-
 def get_descriptors(conn, bat_object_id, transport_id=None, is_first = False):
     '''This function return names of all ACTIVE 
     descriptors that binding for getting 
@@ -66,11 +50,11 @@ def get_descriptors(conn, bat_object_id, transport_id=None, is_first = False):
     try:
         if is_first:
             cur.execute("SELECT descriptor_name FROM \
-                bat_first_loop WHERE bat=%s \
+                bat_first_loop WHERE bouquet=%s \
                 and is_active=%s" % (bat_object_id, True))
         else:
             cur.execute("SELECT descriptor_name FROM \
-                bat_second_loop WHERE bat=%s and transport=%s \
+                bat_second_loop WHERE bouquet=%s and transport=%s \
                 and is_active=%s" % (bat_object_id, transport_id, True))
 
         active_descriptors = cur.fetchall()
@@ -89,7 +73,7 @@ def get_descriptor_data(conn, descriptor_name, bat_object_id, dvb_table, transpo
 
             loop_descriptors = [] # Append to this list descriptors with many data
 
-            cur.execute("SELECT * FROM %s WHERE bat=%s \
+            cur.execute("SELECT * FROM %s WHERE bouquet=%s \
                 and dvb_table='%s'" % (descriptor_name, bat_object_id, dvb_table))
             data = cur.fetchall()
             columns = [i[0] for i in cur.description]
@@ -114,7 +98,7 @@ def get_descriptor_data(conn, descriptor_name, bat_object_id, dvb_table, transpo
                 "nds_e4_descriptor"
             ] # Append to this list descriptors with many data
 
-            cur.execute("SELECT * FROM %s WHERE bat=%s \
+            cur.execute("SELECT * FROM %s WHERE bouquet=%s \
                 and transport=%s and dvb_table='%s'" % (descriptor_name, 
                                                         bat_object_id, 
                                                         transport_object_id, 
@@ -220,5 +204,9 @@ def sql_api_bat(bat_object_id, bouquet_id):
     conn = connect()
     transports = get_bat_transports(conn, bat_object_id)
 
-    return mapping(conn, bat_object_id, bouquet_id, transports)
+    if transports != None and transports != 0:
+        return mapping(conn, bat_object_id, bouquet_id, transports)
+    else:
+        print ("Error! Not found any transports mapping to this bouquet.")
+        pass
 
